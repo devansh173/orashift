@@ -1,0 +1,56 @@
+# Reproduces both databases for anyone cloning the repo.
+#
+# Images are pinned so the dialects cannot drift: gvenzl/oracle-free is pinned by
+# digest because its :latest tag moved from 23ai to 26ai, and a moving source
+# dialect would silently invalidate every verified translation pair.
+#
+# Host ports default to the standard 1521 and 5432. If you already run your own
+# Oracle or PostgreSQL on those ports, either leave this file alone and point
+# .env at your instances, or set ORACLE_PORT / PG_PORT in .env to free ports.
+
+name: orashift
+
+services:
+  oracle:
+    # Oracle AI Database 26ai Free 23.26.2.0.0
+    image: gvenzl/oracle-free@sha256:e2763af84ecc345d48e4e3fe7999d0b7bb57885b6e0166051acd5f62e27eb605
+    container_name: orashift-oracle
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_SYS_PASSWORD:?set ORACLE_SYS_PASSWORD in .env}
+      APP_USER: ${ORACLE_USER:-orashift}
+      APP_USER_PASSWORD: ${ORACLE_PASSWORD:?set ORACLE_PASSWORD in .env}
+    ports:
+      - "${ORACLE_PORT:-1521}:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 40
+      # A first boot has to create the database, which takes a few minutes.
+      start_period: 300s
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:17.10-alpine
+    container_name: orashift-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${PG_SUPERUSER_PASSWORD:?set PG_SUPERUSER_PASSWORD in .env}
+      POSTGRES_DB: ${PG_DATABASE:-orashift}
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${PG_DATABASE:-orashift}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
+  postgres-data:

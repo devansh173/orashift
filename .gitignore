@@ -1,0 +1,32 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Generated artefacts (reproducible from the pipeline, not source)
+data/raw/
+data/interim/
+results/
+*.sqlite
+*.sqlite3
+*.db
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

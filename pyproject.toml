@@ -1,0 +1,60 @@
+[project]
+name = "orashift"
+version = "0.1.0"
+description = "Execution-verified Oracle SQL to PostgreSQL translation with a fine-tuned open LLM"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Devansh Bhargava", email = "bdevansh173@gmail.com" }]
+keywords = ["oracle", "postgresql", "sql", "translation", "qlora", "fine-tuning"]
+
+dependencies = [
+    "typer>=0.15.1",
+    "rich>=13.9.4",
+    "pydantic>=2.10.3",
+    "pydantic-settings>=2.7.0",
+    "structlog>=24.4.0",
+    "oracledb>=2.5.1",
+    "psycopg[binary]>=3.2.3",
+]
+
+[project.scripts]
+orashift = "orashift.cli:app"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8.4",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/orashift"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ANN", "RUF", "TID"]
+ignore = [
+    "ANN401",  # allow typing.Any where it is genuinely the right type
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["orashift"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+    "db: requires a live Oracle and/or PostgreSQL connection (skipped in CI)",
+]
