@@ -1,0 +1,151 @@
+order_id,customer_id,order_date,status,discount_pct,notes
+500000,1029,2025-05-08 18:57:32,NEW,,
+500001,1015,2024-10-25 12:18:00,CANCELLED,,
+500002,1000,2025-11-21 07:17:10,SHIPPED,0.0033,Second attempt; first delivery failed.
+500003,1028,2024-12-15 18:09:57,NEW,0.0375,
+500004,1030,2026-01-25 07:24:02,SHIPPED,,Second attempt; first delivery failed.
+500005,1017,2025-01-04 20:50:20,SHIPPED,,Second attempt; first delivery failed.
+500006,1039,2026-05-10 22:18:19,PAID,,
+500007,1013,2024-03-19 08:39:07,SHIPPED,,Customer called to confirm the delivery window.
+500008,1012,2026-02-22 14:22:01,NEW,0.1744,
+500009,1016,2025-09-11 19:32:37,CANCELLED,0.1194,Customer called to confirm the delivery window.
+500010,1018,2024-03-25 19:07:08,PAID,,
+500011,1002,2024-05-05 15:44:53,NEW,0.1660,
+500012,1018,2024-09-24 13:38:36,SHIPPED,0.1660,Customer called to confirm the delivery window.
+500013,1012,2024-05-20 12:07:47,PAID,0.0653,
+500014,1048,2026-04-19 08:51:12,CANCELLED,,Customer called to confirm the delivery window.
+500015,1056,2025-06-20 17:13:31,NEW,0.1286,
+500016,1028,2025-11-20 20:33:04,NEW,0.1557,Leave with the neighbour if nobody answers.
+500017,1000,2026-03-21 14:24:55,NEW,0.0917,"Gift wrap requested, no invoice in the box."
+500018,1042,2025-10-21 18:51:22,PAID,,"Gift wrap requested, no invoice in the box."
+500019,1043,2024-12-01 18:56:25,SHIPPED,0.1586,"Gift wrap requested, no invoice in the box."
+500020,1017,2025-08-27 11:26:05,CANCELLED,,
+500021,1034,2025-10-30 15:52:01,PAID,,Second attempt; first delivery failed.
+500022,1016,2024-06-23 10:18:04,NEW,0.2010,
+500023,1003,2025-03-25 08:35:24,CANCELLED,0.0876,
+500024,1048,2024-02-19 19:05:34,PAID,,
+500025,1003,2026-03-13 09:54:43,CANCELLED,,
+500026,1047,2026-05-27 08:08:25,CANCELLED,,"Gift wrap requested, no invoice in the box."
+500027,1024,2025-10-04 17:11:43,SHIPPED,,
+500028,1025,2025-09-05 16:31:33,PAID,0.2390,
+500029,1036,2025-08-01 14:50:13,SHIPPED,0.2302,
+500030,1052,2026-01-19 10:39:54,SHIPPED,0.1783,Customer called to confirm the delivery window.
+500031,1029,2024-11-04 09:20:01,NEW,0.1992,
+500032,1044,2025-07-17 16:46:41,SHIPPED,,"Gift wrap requested, no invoice in the box."
+500033,1023,2024-10-30 14:30:58,NEW,0.0269,Customer called to confirm the delivery window.
+500034,1014,2024-11-09 15:51:02,NEW,,"Gift wrap requested, no invoice in the box."
+500035,1019,2025-03-16 15:40:16,PAID,,
+500036,1054,2025-10-05 15:30:53,SHIPPED,,
+500037,1015,2025-07-04 14:06:20,CANCELLED,0.0309,Customer called to confirm the delivery window.
+500038,1020,2025-04-27 10:09:12,PAID,0.1582,Second attempt; first delivery failed.
+500039,1040,2025-12-31 11:57:33,PAID,,Customer called to confirm the delivery window.
+500040,1058,2025-06-11 21:59:09,PAID,0.0520,
+500041,1048,2024-04-24 22:26:29,PAID,,"Gift wrap requested, no invoice in the box."
+500042,1039,2025-06-11 19:10:35,SHIPPED,0.0149,
+500043,1027,2024-01-12 16:57:30,NEW,,
+500044,1058,2026-03-07 14:21:07,CANCELLED,,Leave with the neighbour if nobody answers.
+500045,1008,2025-09-24 06:07:22,CANCELLED,,"Gift wrap requested, no invoice in the box."
+500046,1022,2025-07-21 12:57:49,NEW,0.0202,
+500047,1013,2024-03-04 12:10:48,CANCELLED,,
+500048,1049,2025-01-12 11:07:19,PAID,0.1483,"Gift wrap requested, no invoice in the box."
+500049,1043,2025-10-30 07:51:36,NEW,0.2034,
+500050,1019,2025-03-17 21:38:22,NEW,,
+500051,1002,2025-03-13 19:54:31,SHIPPED,0.1863,"Gift wrap requested, no invoice in the box."
+500052,1035,2026-03-15 18:37:31,CANCELLED,,
+500053,1039,2025-04-17 21:06:13,PAID,,Leave with the neighbour if nobody answers.
+500054,1048,2024-03-08 12:25:25,NEW,,Second attempt; first delivery failed.
+500055,1019,2024-10-03 07:17:44,CANCELLED,,Second attempt; first delivery failed.
+500056,1027,2025-03-22 19:00:05,CANCELLED,0.2072,
+500057,1035,2025-07-25 11:03:39,PAID,0.0647,"Gift wrap requested, no invoice in the box."
+500058,1021,2025-12-05 09:51:58,NEW,,
+500059,1044,2026-01-11 09:18:15,SHIPPED,,Second attempt; first delivery failed.
+500060,1004,2026-05-28 15:04:53,SHIPPED,0.1105,
+500061,1057,2025-03-03 19:30:58,SHIPPED,,
+500062,1001,2026-03-13 07:57:27,NEW,0.1479,"Gift wrap requested, no invoice in the box."
+500063,1049,2026-01-30 17:46:29,PAID,,
+500064,1036,2024-07-06 15:31:21,SHIPPED,,
+500065,1009,2026-05-24 10:48:40,PAID,,
+500066,1047,2026-05-16 22:27:43,PAID,,
+500067,1005,2025-12-07 18:04:20,SHIPPED,,
+500068,1045,2025-11-15 10:38:09,PAID,,Second attempt; first delivery failed.
+500069,1020,2024-05-18 09:28:11,CANCELLED,0.0656,Second attempt; first delivery failed.
+500070,1021,2024-03-08 18:55:13,NEW,0.0965,"Gift wrap requested, no invoice in the box."
+500071,1038,2026-06-16 15:36:50,PAID,,Second attempt; first delivery failed.
+500072,1049,2024-09-13 18:35:54,NEW,,"Gift wrap requested, no invoice in the box."
+500073,1056,2025-05-19 22:17:18,PAID,,
+500074,1047,2025-12-03 19:44:03,NEW,,
+500075,1057,2025-10-29 20:22:57,SHIPPED,,Customer called to confirm the delivery window.
+500076,1042,2026-06-15 22:54:45,CANCELLED,0.1985,
+500077,1001,2025-12-24 21:12:08,CANCELLED,0.1751,
+500078,1058,2024-05-31 15:22:46,SHIPPED,,Second attempt; first delivery failed.
+500079,1049,2024-11-01 10:17:33,PAID,,
+500080,1016,2024-07-13 08:06:29,CANCELLED,,"Gift wrap requested, no invoice in the box."
+500081,1059,2026-01-16 11:14:25,PAID,,Second attempt; first delivery failed.
+500082,1034,2024-06-27 09:57:43,NEW,,Leave with the neighbour if nobody answers.
+500083,1026,2024-08-21 22:56:33,CANCELLED,0.2075,Customer called to confirm the delivery window.
+500084,1016,2024-06-01 20:36:33,SHIPPED,,
+500085,1038,2024-03-30 22:26:22,SHIPPED,,
+500086,1025,2026-02-06 08:51:02,SHIPPED,,Second attempt; first delivery failed.
+500087,1019,2024-03-07 13:34:36,NEW,,Leave with the neighbour if nobody answers.
+500088,1028,2024-08-16 17:05:21,CANCELLED,,
+500089,1035,2025-11-08 16:59:52,NEW,,
+500090,1021,2025-03-25 22:56:17,PAID,0.0220,
+500091,1018,2026-01-24 09:00:50,PAID,0.1169,Second attempt; first delivery failed.
+500092,1057,2024-07-18 08:26:57,PAID,,Second attempt; first delivery failed.
+500093,1036,2025-05-07 17:00:02,NEW,,Leave with the neighbour if nobody answers.
+500094,1053,2025-01-23 12:51:16,CANCELLED,,"Gift wrap requested, no invoice in the box."
+500095,1023,2024-11-29 19:15:22,CANCELLED,,
+500096,1010,2025-05-11 07:12:06,CANCELLED,,
+500097,1019,2025-12-03 08:16:56,PAID,,
+500098,1021,2024-07-10 15:23:39,NEW,,
+500099,1037,2025-09-08 18:19:12,CANCELLED,0.0795,
+500100,1006,2024-09-30 20:00:25,CANCELLED,,Second attempt; first delivery failed.
+500101,1055,2025-06-22 10:08:51,NEW,,
+500102,1003,2024-12-14 19:50:55,NEW,,Second attempt; first delivery failed.
+500103,1031,2025-10-10 18:40:40,CANCELLED,0.1476,Second attempt; first delivery failed.
+500104,1052,2024-04-20 14:22:58,PAID,,Second attempt; first delivery failed.
+500105,1007,2024-01-26 13:35:20,NEW,,Customer called to confirm the delivery window.
+500106,1045,2026-04-05 17:15:20,SHIPPED,,Leave with the neighbour if nobody answers.
+500107,1042,2026-01-23 16:34:35,PAID,,
+500108,1058,2024-11-29 19:12:10,SHIPPED,,
+500109,1048,2024-11-13 07:34:27,SHIPPED,0.1854,
+500110,1009,2025-07-05 17:17:11,SHIPPED,,Leave with the neighbour if nobody answers.
+500111,1036,2025-06-05 11:33:29,NEW,,
+500112,1019,2025-12-27 22:02:08,SHIPPED,,
+500113,1053,2025-06-18 17:00:08,PAID,0.2006,
+500114,1057,2024-02-08 07:57:45,NEW,0.0428,
+500115,1013,2024-08-11 20:30:06,CANCELLED,,
+500116,1011,2025-09-02 19:38:36,NEW,,
+500117,1041,2024-07-27 16:25:05,SHIPPED,0.0634,"Gift wrap requested, no invoice in the box."
+500118,1008,2024-07-01 08:13:48,NEW,0.2385,
+500119,1012,2024-11-19 12:59:51,CANCELLED,,"Gift wrap requested, no invoice in the box."
+500120,1022,2024-07-08 22:56:50,PAID,,Leave with the neighbour if nobody answers.
+500121,1002,2025-01-17 20:45:13,PAID,,Second attempt; first delivery failed.
+500122,1056,2026-04-03 20:44:38,SHIPPED,,
+500123,1032,2025-06-17 10:23:23,NEW,0.0328,
+500124,1001,2024-03-05 11:14:53,CANCELLED,,
+500125,1036,2026-04-05 11:25:01,CANCELLED,,Second attempt; first delivery failed.
+500126,1024,2024-05-22 14:08:41,SHIPPED,,
+500127,1048,2024-03-17 06:29:42,CANCELLED,0.2335,
+500128,1054,2024-06-02 16:21:03,NEW,,
+500129,1043,2024-06-02 06:28:03,NEW,,Leave with the neighbour if nobody answers.
+500130,1000,2025-05-22 07:33:16,SHIPPED,,"Gift wrap requested, no invoice in the box."
+500131,1043,2025-04-26 16:19:11,NEW,,Customer called to confirm the delivery window.
+500132,1018,2025-06-03 07:08:20,SHIPPED,,Leave with the neighbour if nobody answers.
+500133,1055,2024-06-12 16:34:12,CANCELLED,,
+500134,1022,2025-11-16 22:27:47,SHIPPED,,Second attempt; first delivery failed.
+500135,1017,2025-02-24 13:25:57,SHIPPED,,Leave with the neighbour if nobody answers.
+500136,1014,2026-03-14 21:38:34,PAID,0.0200,Second attempt; first delivery failed.
+500137,1002,2025-04-19 21:04:18,PAID,,
+500138,1015,2025-03-01 11:43:14,CANCELLED,,Second attempt; first delivery failed.
+500139,1052,2024-09-04 11:07:26,SHIPPED,0.2175,Customer called to confirm the delivery window.
+500140,1037,2024-10-06 06:26:47,SHIPPED,,
+500141,1040,2025-01-14 20:21:18,NEW,,
+500142,1027,2024-06-30 19:44:24,PAID,,
+500143,1006,2024-02-23 08:49:27,PAID,0.0540,Second attempt; first delivery failed.
+500144,1033,2025-05-20 07:07:55,CANCELLED,,"Gift wrap requested, no invoice in the box."
+500145,1025,2024-03-07 13:30:27,CANCELLED,,
+500146,1057,2024-10-09 08:51:29,CANCELLED,,
+500147,1036,2024-08-05 19:22:31,NEW,0.0048,Leave with the neighbour if nobody answers.
+500148,1032,2025-03-29 21:42:37,SHIPPED,0.1089,Second attempt; first delivery failed.
+500149,1035,2024-06-09 06:43:45,CANCELLED,,

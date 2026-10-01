@@ -1,0 +1,117 @@
+product_id,sku,product_name,category_id,unit_price,description,launched_on
+1,SKU-00001,Harbour Speaker,9,252.55,"Customer favourite: ""it just works"", as one reviewer put it.",2024-02-13 06:26:07
+2,SKU-00002,Drift Speaker,12,2272.44,O'Brien & Sons have manufactured this line since 1987.,2021-02-22 09:58:37
+3,SKU-00003,Harbour Handset,4,103.28,,2022-06-27 12:28:02
+4,SKU-00004,Nimbus Handset,4,37.02,"Lightweight, durable, and quiet in use.",2023-12-26 14:39:46
+5,SKU-00005,Harbour Kettle,5,685.97,"Compatible with most third-party accessories, including older models.",2022-06-02 07:25:15
+6,SKU-00006,Glint Handset,9,2258.60,,2022-08-13 21:02:02
+7,SKU-00007,Basalt Armchair,11,2109.86,"Ships in recyclable packaging, no plastic inserts.",2022-10-29 11:12:50
+8,SKU-00008,Lumen Armchair,10,1325.76,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-11-10 09:54:44
+9,SKU-00009,Drift Headset,7,1495.50,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-07-06 21:51:52
+10,SKU-00010,Clove Speaker,8,1214.73,,
+11,SKU-00011,Ironwood Speaker,5,1495.01,"Ships in recyclable packaging, no plastic inserts.",2021-04-18 17:30:02
+12,SKU-00012,Basalt Novel,10,941.52,"Specifications:
+weight 1.2 kg
+warranty 24 months",2025-05-23 15:45:41
+13,SKU-00013,Orchard Guide,11,2145.32,"Specifications:
+weight 1.2 kg
+warranty 24 months",
+14,SKU-00014,Fathom Speaker,10,2132.76,"Customer favourite: ""it just works"", as one reviewer put it.",2021-06-14 22:37:44
+15,SKU-00015,Hollow Headset,4,411.46,"Specifications:
+weight 1.2 kg
+warranty 24 months",2024-06-05 16:01:29
+16,SKU-00016,Clove Armchair,11,2356.90,O'Brien & Sons have manufactured this line since 1987.,2024-09-08 11:54:05
+17,SKU-00017,Kestrel Handset,4,2270.34,O'Brien & Sons have manufactured this line since 1987.,2023-01-18 13:37:05
+18,SKU-00018,Kestrel Novel,12,2437.29,,2024-11-20 12:00:24
+19,SKU-00019,Kestrel Handset,8,237.18,"Specifications:
+weight 1.2 kg
+warranty 24 months",2023-04-15 11:13:05
+20,SKU-00020,Drift Speaker,8,822.74,"Compatible with most third-party accessories, including older models.",
+21,SKU-00021,Lumen Kettle,11,1982.22,"Compatible with most third-party accessories, including older models.",2021-04-01 16:12:18
+22,SKU-00022,Glint Speaker,12,2146.75,,2021-04-06 11:53:59
+23,SKU-00023,Lumen Handset,12,2162.90,O'Brien & Sons have manufactured this line since 1987.,2024-09-02 09:53:31
+24,SKU-00024,Hollow Guide,12,1205.50,O'Brien & Sons have manufactured this line since 1987.,2024-11-16 09:35:20
+25,SKU-00025,Fathom Speaker,4,1473.95,"Ships in recyclable packaging, no plastic inserts.",
+26,SKU-00026,Kestrel Headset,5,239.76,,
+27,SKU-00027,Harbour Speaker,5,187.01,"Compatible with most third-party accessories, including older models.",2023-06-20 10:31:56
+28,SKU-00028,Ironwood Kettle,10,2201.73,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-12-21 13:50:50
+29,SKU-00029,Clove Headset,11,384.11,"Specifications:
+weight 1.2 kg
+warranty 24 months",
+30,SKU-00030,Vellum Headset,10,1381.62,O'Brien & Sons have manufactured this line since 1987.,2022-11-10 18:46:18
+31,SKU-00031,Kestrel Armchair,10,1005.35,"Compatible with most third-party accessories, including older models.",
+32,SKU-00032,Ember Speaker,8,407.59,"Customer favourite: ""it just works"", as one reviewer put it.",2024-08-13 13:21:39
+33,SKU-00033,Hollow Handset,5,477.74,,
+34,SKU-00034,Lumen Armchair,8,1016.01,"Specifications:
+weight 1.2 kg
+warranty 24 months",2021-07-03 08:56:29
+35,SKU-00035,Ironwood Guide,5,1591.38,"Ships in recyclable packaging, no plastic inserts.",2024-07-02 11:39:00
+36,SKU-00036,Kestrel Armchair,9,1708.92,"Ships in recyclable packaging, no plastic inserts.",2023-04-29 16:20:56
+37,SKU-00037,Lumen Guide,11,1326.99,"Compatible with most third-party accessories, including older models.",2024-09-14 06:05:43
+38,SKU-00038,Orchard Novel,11,2181.04,"Lightweight, durable, and quiet in use.",2025-06-03 22:59:24
+39,SKU-00039,Orchard Armchair,4,2271.53,"Customer favourite: ""it just works"", as one reviewer put it.",2022-11-11 15:58:41
+40,SKU-00040,Vellum Speaker,8,1750.72,"Ships in recyclable packaging, no plastic inserts.",2024-10-10 18:00:41
+41,SKU-00041,Nimbus Speaker,9,1329.27,"Customer favourite: ""it just works"", as one reviewer put it.",2025-03-05 21:49:32
+42,SKU-00042,Glint Headset,12,521.56,"Specifications:
+weight 1.2 kg
+warranty 24 months",
+43,SKU-00043,Orchard Armchair,5,2385.94,"Lightweight, durable, and quiet in use.",2023-11-24 07:02:01
+44,SKU-00044,Orchard Handset,11,1768.82,"Lightweight, durable, and quiet in use.",
+45,SKU-00045,Basalt Laptop,9,2209.75,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-11-01 17:44:18
+46,SKU-00046,Clove Handset,5,1152.10,"Specifications:
+weight 1.2 kg
+warranty 24 months",2021-09-12 14:38:02
+47,SKU-00047,Orchard Kettle,5,2373.43,"Ships in recyclable packaging, no plastic inserts.",
+48,SKU-00048,Vellum Speaker,12,1688.96,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-01-03 18:18:06
+49,SKU-00049,Glint Kettle,5,40.14,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-02-25 06:05:24
+50,SKU-00050,Hollow Laptop,12,335.66,"Specifications:
+weight 1.2 kg
+warranty 24 months",
+51,SKU-00051,Kestrel Novel,12,1222.92,O'Brien & Sons have manufactured this line since 1987.,2024-02-25 20:47:41
+52,SKU-00052,Basalt Novel,7,383.58,"Ships in recyclable packaging, no plastic inserts.",2024-09-01 22:38:12
+53,SKU-00053,Glint Kettle,5,219.27,"Customer favourite: ""it just works"", as one reviewer put it.",2022-03-13 12:36:38
+54,SKU-00054,Kestrel Handset,4,2254.60,"Customer favourite: ""it just works"", as one reviewer put it.",2023-08-07 14:45:26
+55,SKU-00055,Hollow Guide,8,847.82,,2022-07-16 19:26:37
+56,SKU-00056,Kestrel Speaker,4,815.87,"Lightweight, durable, and quiet in use.",2025-03-03 12:00:36
+57,SKU-00057,Nimbus Guide,12,1292.95,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-04-22 19:57:35
+58,SKU-00058,Ember Laptop,11,1904.52,"Specifications:
+weight 1.2 kg
+warranty 24 months",2022-07-25 10:32:50
+59,SKU-00059,Nimbus Headset,7,1554.15,"Compatible with most third-party accessories, including older models.",2025-05-20 09:46:38
+60,SKU-00060,Vellum Headset,12,1300.47,"Customer favourite: ""it just works"", as one reviewer put it.",
+61,SKU-00061,Nimbus Laptop,8,2166.02,"Customer favourite: ""it just works"", as one reviewer put it.",2024-11-26 13:47:06
+62,SKU-00062,Vellum Headset,4,434.82,"Customer favourite: ""it just works"", as one reviewer put it.",2022-06-16 13:06:33
+63,SKU-00063,Glint Laptop,5,294.89,"Compatible with most third-party accessories, including older models.",2022-09-05 07:35:40
+64,SKU-00064,Vellum Handset,7,1121.24,"Ships in recyclable packaging, no plastic inserts.",2021-08-01 18:49:31
+65,SKU-00065,Orchard Guide,11,2279.63,O'Brien & Sons have manufactured this line since 1987.,
+66,SKU-00066,Hollow Guide,8,1227.01,"Specifications:
+weight 1.2 kg
+warranty 24 months",2023-11-05 09:12:07
+67,SKU-00067,Vellum Handset,9,1517.13,O'Brien & Sons have manufactured this line since 1987.,2023-10-18 06:54:51
+68,SKU-00068,Ironwood Kettle,10,1363.70,"Customer favourite: ""it just works"", as one reviewer put it.",2025-03-03 06:46:31
+69,SKU-00069,Fathom Laptop,9,863.30,"Lightweight, durable, and quiet in use.",
+70,SKU-00070,Basalt Armchair,11,1979.33,"Lightweight, durable, and quiet in use.",2022-06-03 22:57:59
+71,SKU-00071,Fathom Speaker,9,2281.99,,
+72,SKU-00072,Basalt Laptop,12,468.44,,2022-07-18 12:32:21
+73,SKU-00073,Basalt Laptop,7,1772.50,"Compatible with most third-party accessories, including older models.",2024-11-08 14:21:54
+74,SKU-00074,Vellum Laptop,10,2446.86,O'Brien & Sons have manufactured this line since 1987.,2021-07-19 15:06:56
+75,SKU-00075,Nimbus Headset,7,2038.15,"Ships in recyclable packaging, no plastic inserts.",2023-06-01 22:34:09
+76,SKU-00076,Drift Armchair,12,2240.06,"Ships in recyclable packaging, no plastic inserts.",2024-10-14 18:55:32
+77,SKU-00077,Orchard Kettle,8,2185.65,"Lightweight, durable, and quiet in use.",2023-01-04 17:40:09
+78,SKU-00078,Kestrel Speaker,7,1122.70,,
+79,SKU-00079,Kestrel Kettle,7,2278.76,"Compatible with most third-party accessories, including older models.",2024-09-30 19:58:14
+80,SKU-00080,Glint Armchair,4,10.49,"Lightweight, durable, and quiet in use.",2022-11-20 20:02:56

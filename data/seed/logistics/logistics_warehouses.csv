@@ -1,0 +1,11 @@
+warehouse_id,warehouse_code,city,country_code,capacity_pallets
+1,WH-ROT01,Rotterdam,IT,
+2,WH-HAM02,Hamburg,IT,
+3,WH-VAL03,Valencia,SE,36843
+4,WH-GDA04,Gdansk,DE,11041
+5,WH-TRI05,Trieste,DE,
+6,WH-ANT06,Antwerp,LV,
+7,WH-GOT07,Gothenburg,PL,16705
+8,WH-BIL08,Bilbao,NL,38089
+9,WH-PIR09,Piraeus,GR,26891
+10,WH-CON10,Constanta,NL,1337

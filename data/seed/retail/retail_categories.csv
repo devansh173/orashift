@@ -1,0 +1,13 @@
+category_id,category_name,parent_category_id,sort_order
+1,Electronics,,1
+2,Home & Garden,,2
+3,Books,,3
+4,Laptops,1,1
+5,Phones,1,2
+6,Audio,1,3
+7,Kitchen,2,1
+8,Furniture,2,2
+9,Fiction,3,1
+10,Non-fiction,3,2
+11,Headphones,6,1
+12,Laptop Bags,4,2

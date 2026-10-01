@@ -16,6 +16,17 @@ from orashift.db.base import ServerInfo
 
 DIALECT = "oracle"
 
+# By default python-oracledb returns NUMBER as a Python float, which silently
+# loses precision and would make result-set comparison against PostgreSQL
+# unfaithful: psycopg returns numeric as Decimal. Fetching decimals keeps both
+# engines returning the same Python type for the same stored value.
+oracledb.defaults.fetch_decimals = True
+
+# Return CLOB columns as plain str rather than as a LOB object that has to be
+# read with an extra round trip. Keeps CLOB values directly comparable with the
+# text values PostgreSQL returns.
+oracledb.defaults.fetch_lobs = False
+
 # SYS_CONTEXT and USER are readable by any account with CREATE SESSION, so this
 # works for a least-privilege user with no catalog grants.
 _SESSION_SQL = """

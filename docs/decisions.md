@@ -258,3 +258,153 @@ first boot, which would dominate CI time for very little signal. Mocking a drive
 the mock, not the database, and this project's entire thesis is that only real execution
 counts. Splitting them keeps CI at lint-and-unit-test speed while the real checks stay one
 command away locally.
+
+---
+
+## D14 — Domain-prefixed tables in one schema, not four Oracle users
+
+**Decision.** All 20 tables live in the single `ORASHIFT` Oracle schema and the single
+`orashift` PostgreSQL database, with names prefixed by domain: `retail_customers`,
+`hr_employees`, `library_loans`, `logistics_shipments`. "Schema" is a logical grouping in
+this project, not a database namespace.
+
+**Alternatives.**
+- *Four Oracle users mirroring four PostgreSQL schemas.* The faithful structure, since in
+  Oracle a schema *is* a user.
+- *One Oracle user, four PostgreSQL schemas.* Asymmetric, so every translation would have
+  to add or remove schema qualification.
+- *Unprefixed names in one namespace.* Would collide: three of the four domains naturally
+  want a `members` or `customers` table.
+
+**Why.** Four Oracle users means four accounts to create and grant, and the pipeline would
+need either four connections or cross-schema privileges — directly undoing the
+least-privilege design in D10. More importantly, it would make every translated statement
+*also* a namespace translation, and namespace mechanics differ so much between the engines
+that it would add noise to every measurement for no gain. The logical grouping still does
+its real job, which is driving the held-out split in phase 4.
+
+**Cost accepted.** The reference schemas are slightly less realistic than a true
+multi-schema Oracle database, and the project therefore does not measure translation of
+schema-qualified names. Recorded as a limitation.
+
+---
+
+## D15 — Seed data defined once as CSV, not as INSERT statements per dialect
+
+**Decision.** The DDL is hand-written separately for each dialect, because that *is* the
+reference translation being graded. The row data is generated once into committed CSVs
+under `data/seed/` and loaded into both engines through parameterised inserts.
+
+**Alternatives.**
+- *Hand-written `INSERT` statements per dialect.* Reads naturally and needs no loader.
+- *Generate rows on the fly at load time, without committing them.* Less repository bulk.
+- *Dump from Oracle and restore into PostgreSQL.* Would guarantee identity directly.
+
+**Why.** Two hand-written sets of INSERTs are two things to keep in step, and they will
+drift — at which point every downstream verification result is quietly meaningless,
+because "the same query returns different rows" would no longer imply a translation bug.
+Loading one set of rows through parameter binding makes identical data true *by
+construction*. Committing the CSVs rather than generating at load time means the data is
+reviewable in a pull request and cannot change under a Python version that alters
+`random`. A dump-and-restore would couple the data to Oracle's export format and make the
+PostgreSQL schema a derivative rather than an independent hand-written reference.
+
+---
+
+## D16 — `logistics` is the fully held-out schema
+
+**Decision.** `logistics` is excluded from training entirely in phase 4. Evaluation
+reports held-out-schema and in-schema accuracy side by side.
+
+**Alternatives.**
+- *Hold out `retail`.* The largest schema, so the most test data.
+- *Random split across all four schemas.* Maximises training data.
+- *No held-out schema.* Simplest.
+
+**Why.** A random split lets the model see every table and column name during training,
+so test accuracy would partly measure memorisation of this particular schema rather than
+translation skill. `logistics` was chosen specifically because its vocabulary —
+warehouses, carriers, legs, tracking events — shares nothing with the other three, while
+still exercising the same constructs, including a self-referencing hierarchy for
+`CONNECT BY` and a `CLOB` column. `retail` was kept in training because its category tree
+and composite primary key are the most useful constructs to learn from.
+
+---
+
+## D17 — Force Decimal and plain-string fetching on the Oracle driver
+
+**Decision.** `orashift.db.oracle` sets `oracledb.defaults.fetch_decimals = True` and
+`oracledb.defaults.fetch_lobs = False` at import.
+
+**Alternatives.**
+- *Leave the defaults* and convert at each call site.
+- *Compare as floats.*
+
+**Why.** Measured, not assumed: by default python-oracledb returns `NUMBER` as a Python
+`float`, so `NUMBER(12,2)` holding 1234.56 arrives as a binary float while psycopg returns
+`Decimal('1234.56')` for the same stored value. Comparing those is comparing two different
+types, and binary floats cannot represent most decimal fractions exactly, so a correct
+translation could fail verification over a rounding artefact. `fetch_lobs = False` makes
+CLOB columns arrive as `str` instead of a LOB handle needing an extra round trip, which
+keeps them directly comparable to PostgreSQL `text`. Setting both once at import means no
+call site can forget.
+
+---
+
+## D18 — No empty strings in the seed data
+
+**Decision.** The generator refuses to emit an empty string, and raises if one is
+constructed.
+
+**Alternatives.**
+- *Allow empty strings and accept that the engines differ.*
+- *Store a sentinel such as `'(empty)'`.*
+
+**Why.** Oracle cannot store an empty string: `''` becomes NULL on insert. So any empty
+string in the data would make the two engines hold *different* values for that cell by
+definition, and the whole premise — identical data on both sides — would be false. The
+difference is far too important to drop, so it is exercised as a *query* construct in
+later phases instead, where it belongs. A sentinel would just be a different value, not
+the behaviour under test.
+
+---
+
+## D19 — Verify seed data by digest, not by row count
+
+**Decision.** `orashift seed` reads every table back from both engines, normalises the
+values to canonical text, and compares a SHA-256 digest per table.
+
+**Alternatives.**
+- *Compare row counts only.* Cheap.
+- *Compare with a `SUM`/`COUNT` aggregate per column in SQL.*
+- *Trust the loader.*
+
+**Why.** Row counts would pass happily while a column was truncated, a NULL was bound as a
+zero, or a numeric lost its scale — exactly the failures this design is trying to rule out.
+Computing aggregates in SQL would mean writing the check twice, once per dialect, which has
+the same drift problem as D15. Reading values back into Python and normalising once means
+a single comparator, and it is what caught the real defect in the `transit_days` view
+(see docs/dialect-notes.md section 7).
+
+**Cost accepted.** It reads the whole dataset into memory. At roughly 2 000 rows that is
+irrelevant; it would need streaming at a different scale.
+
+---
+
+## D20 — A deliberately simple DDL statement splitter
+
+**Decision.** `orashift.seed.load.split_statements` drops whole-line `--` comments and
+splits on semicolons. Nothing more.
+
+**Alternatives.**
+- *Use `sqlglot` to parse and split.* Correct in general.
+- *Put each statement in its own file.*
+- *Execute the files through `sqlplus` and `psql`.*
+
+**Why.** The schema files are written to stay within what this handles: no PL/SQL blocks,
+no semicolons inside string literals. A real parser is the right answer for arbitrary
+input, and phase 3 will use `sqlglot` where arbitrary input actually arrives — but using
+it here would mean the schema loader fails whenever `sqlglot` cannot parse an Oracle-ism,
+which is the opposite of what a bootstrap step should do. Shelling out to the native
+clients would add two more tools to the dependency list for a fresh clone. The limitation
+is documented in the function's own docstring so the next reader is not surprised.

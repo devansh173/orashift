@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -28,6 +28,12 @@ check: lint  ## Everything CI runs: lint, format check, unit tests
 
 check-connections:  ## Print the Oracle and PostgreSQL server versions
 	$(UV) run orashift check-connections
+
+seed:  ## Load the schemas and seed data into both databases, then verify
+	$(UV) run orashift seed
+
+reseed:  ## Regenerate the seed CSVs from the fixed seed, then load and verify
+	$(UV) run orashift seed --regenerate
 
 up:  ## Start the bundled databases
 	docker compose up -d

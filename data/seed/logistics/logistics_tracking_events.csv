@@ -1,0 +1,359 @@
+event_id,shipment_id,event_at,event_code,location_city,remarks
+1,7000000,2025-08-27 06:07:57,CUSTOMS_CLEARED,,Reefer unit logged -18 C throughout.
+2,7000001,2025-09-18 13:58:09,DELAY_REPORTED,Valencia,
+3,7000001,2025-09-26 06:58:09,PICKED_UP,Piraeus,
+4,7000001,2025-09-20 19:58:09,DEPARTED,,Reefer unit logged -18 C throughout.
+5,7000001,2025-09-22 05:58:09,DELIVERED,Bilbao,
+6,7000001,2025-09-13 23:58:09,ARRIVED,Constanta,Held for documentation: missing packing list.
+7,7000002,2025-04-22 07:42:56,DELAY_REPORTED,Antwerp,Reefer unit logged -18 C throughout.
+8,7000003,2025-09-29 15:13:11,DELAY_REPORTED,Antwerp,
+9,7000003,2025-10-02 08:13:11,ARRIVED,Piraeus,
+10,7000003,2025-09-21 17:13:11,PICKED_UP,Valencia,
+11,7000003,2025-09-20 07:13:11,OUT_FOR_DELIVERY,Antwerp,Partial offload; two pallets remain on board.
+12,7000003,2025-10-01 05:13:11,PICKED_UP,Valencia,
+13,7000004,2025-06-13 13:06:18,OUT_FOR_DELIVERY,Constanta,Partial offload; two pallets remain on board.
+14,7000004,2025-06-08 12:06:18,DEPARTED,Bremerhaven,"Driver reported congestion, 90 minutes lost."
+15,7000005,2025-09-25 03:46:03,OUT_FOR_DELIVERY,Constanta,Held for documentation: missing packing list.
+16,7000005,2025-09-22 07:46:03,CUSTOMS_HOLD,Constanta,Seal intact on arrival.
+17,7000005,2025-09-30 06:46:03,CUSTOMS_HOLD,Bilbao,
+18,7000005,2025-09-22 18:46:03,DELAY_REPORTED,Antwerp,
+19,7000006,2026-04-02 12:31:57,DEPARTED,Bilbao,
+20,7000007,2026-03-27 06:28:59,CUSTOMS_HOLD,Piraeus,
+21,7000007,2026-03-18 01:28:59,ARRIVED,Antwerp,
+22,7000007,2026-03-25 03:28:59,DEPARTED,Gothenburg,Reefer unit logged -18 C throughout.
+23,7000007,2026-03-16 23:28:59,DELIVERED,,
+24,7000007,2026-03-12 11:28:59,ARRIVED,Hamburg,
+25,7000008,2026-04-29 11:27:01,PICKED_UP,Bremerhaven,
+26,7000008,2026-04-23 17:27:01,BOOKING_CREATED,Gdansk,
+27,7000008,2026-04-30 13:27:01,DELIVERED,Piraeus,Reefer unit logged -18 C throughout.
+28,7000008,2026-04-24 07:27:01,BOOKING_CREATED,Gothenburg,Reefer unit logged -18 C throughout.
+29,7000008,2026-04-17 04:27:01,ARRIVED,Valencia,
+30,7000009,2025-01-15 00:48:33,DELIVERED,Piraeus,Held for documentation: missing packing list.
+31,7000009,2025-01-28 02:48:33,CUSTOMS_HOLD,,
+32,7000010,2025-03-31 23:17:33,PICKED_UP,Gothenburg,Partial offload; two pallets remain on board.
+33,7000010,2025-03-29 19:17:33,BOOKING_CREATED,Hamburg,"Driver reported congestion, 90 minutes lost."
+34,7000010,2025-03-29 09:17:33,CUSTOMS_CLEARED,,
+35,7000010,2025-04-04 19:17:33,OUT_FOR_DELIVERY,,"Driver reported congestion, 90 minutes lost."
+36,7000010,2025-03-27 16:17:33,CUSTOMS_HOLD,Hamburg,Held for documentation: missing packing list.
+37,7000011,2025-06-15 01:43:46,CUSTOMS_HOLD,,
+38,7000011,2025-06-21 06:43:46,PICKED_UP,Bremerhaven,"Driver reported congestion, 90 minutes lost."
+39,7000011,2025-06-15 12:43:46,CUSTOMS_HOLD,Constanta,"Driver reported congestion, 90 minutes lost."
+40,7000011,2025-06-20 07:43:46,CUSTOMS_HOLD,Hamburg,"Driver reported congestion, 90 minutes lost."
+41,7000011,2025-06-16 14:43:46,OUT_FOR_DELIVERY,Riga,"Driver reported congestion, 90 minutes lost."
+42,7000012,2025-08-18 20:24:59,DELIVERED,Antwerp,Partial offload; two pallets remain on board.
+43,7000012,2025-08-17 17:24:59,ARRIVED,Hamburg,
+44,7000012,2025-08-18 03:24:59,BOOKING_CREATED,Riga,Held for documentation: missing packing list.
+45,7000013,2025-12-15 23:03:20,OUT_FOR_DELIVERY,Rotterdam,
+46,7000014,2026-05-26 14:59:19,BOOKING_CREATED,Bilbao,Partial offload; two pallets remain on board.
+47,7000014,2026-05-21 19:59:19,PICKED_UP,,Reefer unit logged -18 C throughout.
+48,7000014,2026-06-02 02:59:19,CUSTOMS_HOLD,Gdansk,Held for documentation: missing packing list.
+49,7000014,2026-06-01 04:59:19,CUSTOMS_HOLD,Trieste,Reefer unit logged -18 C throughout.
+50,7000014,2026-05-29 07:59:19,PICKED_UP,,"Driver reported congestion, 90 minutes lost."
+51,7000015,2026-01-13 19:23:59,ARRIVED,,Seal intact on arrival.
+52,7000016,2025-09-14 08:10:45,DEPARTED,Bremerhaven,Held for documentation: missing packing list.
+53,7000016,2025-09-09 05:10:45,CUSTOMS_CLEARED,Hamburg,
+54,7000017,2025-01-25 10:28:39,DELAY_REPORTED,Hamburg,"Driver reported congestion, 90 minutes lost."
+55,7000017,2025-01-21 04:28:39,CUSTOMS_CLEARED,Antwerp,"Driver reported congestion, 90 minutes lost."
+56,7000017,2025-01-24 13:28:39,DELAY_REPORTED,Hamburg,Held for documentation: missing packing list.
+57,7000018,2025-05-25 21:20:01,DEPARTED,Gothenburg,
+58,7000018,2025-06-03 21:20:01,BOOKING_CREATED,Bilbao,Reefer unit logged -18 C throughout.
+59,7000018,2025-06-01 13:20:01,PICKED_UP,Constanta,
+60,7000018,2025-06-02 00:20:01,DEPARTED,Bilbao,Reefer unit logged -18 C throughout.
+61,7000018,2025-05-23 14:20:01,PICKED_UP,Gdansk,Partial offload; two pallets remain on board.
+62,7000019,2025-02-25 13:16:22,DELIVERED,,
+63,7000019,2025-03-03 13:16:22,CUSTOMS_HOLD,Hamburg,
+64,7000020,2025-07-09 12:33:06,CUSTOMS_CLEARED,Gothenburg,Reefer unit logged -18 C throughout.
+65,7000020,2025-07-04 16:33:06,OUT_FOR_DELIVERY,Gothenburg,Held for documentation: missing packing list.
+66,7000021,2025-07-26 04:11:40,DELAY_REPORTED,Rotterdam,Reefer unit logged -18 C throughout.
+67,7000021,2025-07-16 00:11:40,ARRIVED,Constanta,"Driver reported congestion, 90 minutes lost."
+68,7000021,2025-07-21 15:11:40,DELAY_REPORTED,Hamburg,
+69,7000021,2025-07-15 22:11:40,CUSTOMS_CLEARED,Constanta,
+70,7000022,2025-03-28 20:17:02,DEPARTED,,Held for documentation: missing packing list.
+71,7000022,2025-03-28 12:17:02,CUSTOMS_HOLD,Gothenburg,Seal intact on arrival.
+72,7000023,2025-07-10 21:23:37,PICKED_UP,Hamburg,Reefer unit logged -18 C throughout.
+73,7000023,2025-07-05 20:23:37,PICKED_UP,Valencia,
+74,7000024,2026-05-10 14:35:02,PICKED_UP,Hamburg,Held for documentation: missing packing list.
+75,7000025,2026-04-16 12:06:21,ARRIVED,,Held for documentation: missing packing list.
+76,7000025,2026-04-21 10:06:21,ARRIVED,Riga,Partial offload; two pallets remain on board.
+77,7000025,2026-04-30 05:06:21,BOOKING_CREATED,Rotterdam,Partial offload; two pallets remain on board.
+78,7000025,2026-04-24 09:06:21,PICKED_UP,Bilbao,Reefer unit logged -18 C throughout.
+79,7000026,2025-11-27 09:27:24,DELIVERED,Rotterdam,Held for documentation: missing packing list.
+80,7000026,2025-12-01 13:27:24,CUSTOMS_CLEARED,Riga,"Driver reported congestion, 90 minutes lost."
+81,7000026,2025-11-24 14:27:24,OUT_FOR_DELIVERY,Rotterdam,Partial offload; two pallets remain on board.
+82,7000026,2025-11-20 22:27:24,PICKED_UP,Bremerhaven,Partial offload; two pallets remain on board.
+83,7000026,2025-11-24 06:27:24,BOOKING_CREATED,Gdansk,Reefer unit logged -18 C throughout.
+84,7000027,2026-05-01 23:49:41,CUSTOMS_HOLD,,Held for documentation: missing packing list.
+85,7000027,2026-05-11 01:49:41,CUSTOMS_CLEARED,Bilbao,
+86,7000028,2026-01-10 04:01:57,DELAY_REPORTED,,
+87,7000029,2025-06-07 09:32:53,CUSTOMS_CLEARED,,
+88,7000029,2025-05-24 22:32:53,OUT_FOR_DELIVERY,Gdansk,Partial offload; two pallets remain on board.
+89,7000030,2026-08-13 14:50:53,DEPARTED,,Seal intact on arrival.
+90,7000030,2026-08-12 22:50:53,DELAY_REPORTED,,Held for documentation: missing packing list.
+91,7000030,2026-08-08 22:50:53,CUSTOMS_HOLD,Trieste,Seal intact on arrival.
+92,7000030,2026-08-11 07:50:53,BOOKING_CREATED,Bremerhaven,
+93,7000030,2026-08-15 03:50:53,PICKED_UP,Antwerp,Reefer unit logged -18 C throughout.
+94,7000031,2025-03-04 07:39:17,DELAY_REPORTED,Constanta,Reefer unit logged -18 C throughout.
+95,7000031,2025-03-01 17:39:17,DELIVERED,Bremerhaven,
+96,7000031,2025-03-10 13:39:17,DELIVERED,Bremerhaven,"Driver reported congestion, 90 minutes lost."
+97,7000031,2025-03-11 08:39:17,BOOKING_CREATED,Valencia,
+98,7000031,2025-02-23 12:39:17,DEPARTED,,Partial offload; two pallets remain on board.
+99,7000032,2025-11-21 22:00:42,PICKED_UP,Trieste,
+100,7000032,2025-11-18 20:00:42,DELAY_REPORTED,,Seal intact on arrival.
+101,7000033,2025-07-06 20:04:49,CUSTOMS_HOLD,Gdansk,
+102,7000033,2025-07-08 16:04:49,OUT_FOR_DELIVERY,Antwerp,Partial offload; two pallets remain on board.
+103,7000034,2026-04-29 03:20:48,OUT_FOR_DELIVERY,,Reefer unit logged -18 C throughout.
+104,7000034,2026-04-26 05:20:48,CUSTOMS_CLEARED,Antwerp,
+105,7000034,2026-04-19 09:20:48,PICKED_UP,Gothenburg,Seal intact on arrival.
+106,7000034,2026-04-24 17:20:48,DELIVERED,,"Driver reported congestion, 90 minutes lost."
+107,7000035,2025-10-26 06:00:59,CUSTOMS_CLEARED,Bremerhaven,Seal intact on arrival.
+108,7000036,2026-02-07 06:18:54,DELIVERED,Bremerhaven,
+109,7000036,2026-02-08 14:18:54,CUSTOMS_HOLD,Gothenburg,Partial offload; two pallets remain on board.
+110,7000036,2026-02-02 07:18:54,CUSTOMS_HOLD,Constanta,Seal intact on arrival.
+111,7000036,2026-02-15 09:18:54,DEPARTED,Constanta,
+112,7000037,2025-01-29 14:45:22,OUT_FOR_DELIVERY,Riga,Seal intact on arrival.
+113,7000037,2025-01-26 06:45:22,PICKED_UP,Piraeus,Seal intact on arrival.
+114,7000037,2025-02-10 02:45:22,OUT_FOR_DELIVERY,Gothenburg,
+115,7000037,2025-01-31 07:45:22,BOOKING_CREATED,Bremerhaven,Seal intact on arrival.
+116,7000038,2025-04-19 08:00:03,CUSTOMS_HOLD,,Seal intact on arrival.
+117,7000038,2025-04-12 18:00:03,ARRIVED,Riga,Held for documentation: missing packing list.
+118,7000039,2026-01-24 07:54:39,DELIVERED,Gdansk,Seal intact on arrival.
+119,7000039,2026-01-28 23:54:39,ARRIVED,,
+120,7000040,2025-09-15 08:19:54,BOOKING_CREATED,,Held for documentation: missing packing list.
+121,7000041,2025-09-27 20:22:22,CUSTOMS_HOLD,Constanta,
+122,7000042,2025-02-11 08:51:36,CUSTOMS_CLEARED,Valencia,
+123,7000042,2025-02-17 16:51:36,ARRIVED,Piraeus,
+124,7000042,2025-02-07 14:51:36,CUSTOMS_HOLD,Valencia,
+125,7000042,2025-02-15 05:51:36,PICKED_UP,,
+126,7000043,2026-06-28 03:29:54,DEPARTED,Bremerhaven,"Driver reported congestion, 90 minutes lost."
+127,7000043,2026-06-26 08:29:54,DELIVERED,,
+128,7000043,2026-06-28 01:29:54,OUT_FOR_DELIVERY,Piraeus,
+129,7000044,2025-06-18 04:33:30,PICKED_UP,,"Driver reported congestion, 90 minutes lost."
+130,7000044,2025-06-21 01:33:30,PICKED_UP,Constanta,Held for documentation: missing packing list.
+131,7000044,2025-06-27 11:33:30,DELAY_REPORTED,Bilbao,Reefer unit logged -18 C throughout.
+132,7000044,2025-06-13 21:33:30,BOOKING_CREATED,Trieste,
+133,7000045,2026-07-18 07:45:10,DELAY_REPORTED,,
+134,7000045,2026-07-28 00:45:10,CUSTOMS_HOLD,Rotterdam,Reefer unit logged -18 C throughout.
+135,7000045,2026-07-26 03:45:10,CUSTOMS_CLEARED,Bilbao,
+136,7000045,2026-07-27 04:45:10,CUSTOMS_CLEARED,Piraeus,"Driver reported congestion, 90 minutes lost."
+137,7000046,2026-04-01 18:14:25,CUSTOMS_CLEARED,Piraeus,
+138,7000046,2026-04-04 08:14:25,DELAY_REPORTED,Riga,Seal intact on arrival.
+139,7000047,2025-12-03 10:43:12,OUT_FOR_DELIVERY,Gothenburg,Reefer unit logged -18 C throughout.
+140,7000047,2025-12-14 18:43:12,CUSTOMS_HOLD,Valencia,"Driver reported congestion, 90 minutes lost."
+141,7000047,2025-12-15 22:43:12,BOOKING_CREATED,Trieste,Reefer unit logged -18 C throughout.
+142,7000047,2025-12-04 14:43:12,CUSTOMS_CLEARED,Bremerhaven,
+143,7000048,2025-03-11 23:33:12,OUT_FOR_DELIVERY,Piraeus,
+144,7000048,2025-03-16 09:33:12,PICKED_UP,Trieste,Seal intact on arrival.
+145,7000048,2025-03-07 08:33:12,ARRIVED,Trieste,Reefer unit logged -18 C throughout.
+146,7000048,2025-03-07 04:33:12,DELIVERED,Antwerp,"Driver reported congestion, 90 minutes lost."
+147,7000049,2025-04-12 10:22:56,DELIVERED,Rotterdam,Partial offload; two pallets remain on board.
+148,7000049,2025-04-04 11:22:56,BOOKING_CREATED,,Held for documentation: missing packing list.
+149,7000049,2025-04-10 11:22:56,ARRIVED,,Seal intact on arrival.
+150,7000049,2025-04-05 02:22:56,OUT_FOR_DELIVERY,Piraeus,Partial offload; two pallets remain on board.
+151,7000049,2025-04-01 10:22:56,DELIVERED,Rotterdam,Partial offload; two pallets remain on board.
+152,7000050,2026-06-30 16:23:17,DELIVERED,,
+153,7000051,2026-02-27 21:45:38,DELIVERED,Gothenburg,Partial offload; two pallets remain on board.
+154,7000051,2026-02-28 04:45:38,CUSTOMS_HOLD,,Seal intact on arrival.
+155,7000051,2026-03-02 22:45:38,ARRIVED,Gothenburg,Seal intact on arrival.
+156,7000051,2026-03-06 06:45:38,BOOKING_CREATED,Bilbao,Reefer unit logged -18 C throughout.
+157,7000051,2026-02-25 08:45:38,PICKED_UP,Rotterdam,
+158,7000052,2026-01-11 04:20:56,DEPARTED,Bremerhaven,Held for documentation: missing packing list.
+159,7000052,2026-01-14 01:20:56,OUT_FOR_DELIVERY,Gdansk,Held for documentation: missing packing list.
+160,7000052,2026-01-21 17:20:56,CUSTOMS_HOLD,Bilbao,
+161,7000052,2026-01-09 23:20:56,OUT_FOR_DELIVERY,Trieste,
+162,7000053,2025-07-02 12:21:45,DELIVERED,Antwerp,Partial offload; two pallets remain on board.
+163,7000053,2025-07-09 22:21:45,DELIVERED,Valencia,"Driver reported congestion, 90 minutes lost."
+164,7000053,2025-06-28 00:21:45,CUSTOMS_CLEARED,,Seal intact on arrival.
+165,7000054,2026-03-02 19:42:56,DELIVERED,Piraeus,
+166,7000054,2026-03-10 08:42:56,CUSTOMS_HOLD,,
+167,7000054,2026-03-09 22:42:56,OUT_FOR_DELIVERY,Trieste,
+168,7000055,2025-01-12 19:07:50,ARRIVED,Constanta,
+169,7000055,2025-01-09 09:07:50,BOOKING_CREATED,Antwerp,Seal intact on arrival.
+170,7000055,2025-01-13 08:07:50,ARRIVED,Hamburg,Reefer unit logged -18 C throughout.
+171,7000055,2025-01-03 05:07:50,CUSTOMS_HOLD,Antwerp,
+172,7000055,2025-01-15 12:07:50,ARRIVED,Trieste,Partial offload; two pallets remain on board.
+173,7000056,2025-01-08 00:23:36,BOOKING_CREATED,,
+174,7000057,2025-05-25 19:42:07,PICKED_UP,Riga,
+175,7000058,2026-02-14 12:56:56,CUSTOMS_CLEARED,Gothenburg,
+176,7000058,2026-02-20 16:56:56,CUSTOMS_HOLD,Valencia,Reefer unit logged -18 C throughout.
+177,7000058,2026-02-08 19:56:56,CUSTOMS_CLEARED,Trieste,
+178,7000059,2025-12-26 01:26:41,OUT_FOR_DELIVERY,Bremerhaven,
+179,7000059,2025-12-22 13:26:41,CUSTOMS_HOLD,Hamburg,Partial offload; two pallets remain on board.
+180,7000059,2025-12-25 20:26:41,DEPARTED,Valencia,Reefer unit logged -18 C throughout.
+181,7000060,2026-07-20 13:28:28,PICKED_UP,Riga,
+182,7000060,2026-07-20 20:28:28,CUSTOMS_HOLD,,
+183,7000060,2026-07-26 06:28:28,CUSTOMS_CLEARED,Hamburg,Reefer unit logged -18 C throughout.
+184,7000060,2026-07-21 23:28:28,CUSTOMS_HOLD,Trieste,Partial offload; two pallets remain on board.
+185,7000061,2025-06-07 01:35:32,PICKED_UP,Constanta,Held for documentation: missing packing list.
+186,7000062,2026-05-11 02:30:38,CUSTOMS_CLEARED,Antwerp,"Driver reported congestion, 90 minutes lost."
+187,7000062,2026-05-19 11:30:38,OUT_FOR_DELIVERY,Constanta,Partial offload; two pallets remain on board.
+188,7000062,2026-05-16 03:30:38,PICKED_UP,Gdansk,Seal intact on arrival.
+189,7000062,2026-05-18 01:30:38,DEPARTED,Gdansk,Reefer unit logged -18 C throughout.
+190,7000063,2025-11-04 22:39:54,DELAY_REPORTED,Antwerp,Reefer unit logged -18 C throughout.
+191,7000064,2025-12-20 03:26:09,OUT_FOR_DELIVERY,Antwerp,"Driver reported congestion, 90 minutes lost."
+192,7000064,2025-12-25 00:26:09,CUSTOMS_HOLD,,Reefer unit logged -18 C throughout.
+193,7000064,2025-12-18 20:26:09,CUSTOMS_CLEARED,Gdansk,Partial offload; two pallets remain on board.
+194,7000065,2026-03-10 10:55:33,DEPARTED,,
+195,7000065,2026-03-20 01:55:33,BOOKING_CREATED,Bilbao,Seal intact on arrival.
+196,7000065,2026-03-25 07:55:33,ARRIVED,Bilbao,"Driver reported congestion, 90 minutes lost."
+197,7000065,2026-03-23 09:55:33,DEPARTED,,
+198,7000065,2026-03-14 06:55:33,CUSTOMS_HOLD,,
+199,7000066,2025-06-28 00:51:12,CUSTOMS_CLEARED,Gdansk,Held for documentation: missing packing list.
+200,7000066,2025-07-01 19:51:12,PICKED_UP,Piraeus,
+201,7000066,2025-06-25 05:51:12,CUSTOMS_HOLD,Riga,
+202,7000066,2025-06-23 17:51:12,BOOKING_CREATED,Antwerp,Reefer unit logged -18 C throughout.
+203,7000067,2025-06-13 09:44:57,ARRIVED,Gdansk,Held for documentation: missing packing list.
+204,7000068,2025-09-09 12:41:44,BOOKING_CREATED,Bilbao,
+205,7000068,2025-09-07 23:41:44,OUT_FOR_DELIVERY,Rotterdam,
+206,7000068,2025-09-03 09:41:44,OUT_FOR_DELIVERY,Trieste,
+207,7000068,2025-09-13 20:41:44,ARRIVED,Antwerp,Partial offload; two pallets remain on board.
+208,7000068,2025-09-15 19:41:44,BOOKING_CREATED,Gdansk,
+209,7000069,2026-01-09 21:22:10,DELAY_REPORTED,Rotterdam,
+210,7000069,2025-12-25 22:22:10,CUSTOMS_HOLD,,Reefer unit logged -18 C throughout.
+211,7000070,2025-05-02 05:16:22,DELIVERED,Gdansk,
+212,7000071,2026-07-06 07:52:12,BOOKING_CREATED,Hamburg,Partial offload; two pallets remain on board.
+213,7000071,2026-07-03 07:52:12,BOOKING_CREATED,Riga,Reefer unit logged -18 C throughout.
+214,7000071,2026-07-08 18:52:12,OUT_FOR_DELIVERY,Antwerp,Reefer unit logged -18 C throughout.
+215,7000071,2026-07-09 18:52:12,CUSTOMS_CLEARED,Gdansk,Partial offload; two pallets remain on board.
+216,7000072,2026-01-08 23:34:56,DELAY_REPORTED,,Partial offload; two pallets remain on board.
+217,7000072,2026-01-18 09:34:56,DEPARTED,Gothenburg,
+218,7000073,2025-11-17 21:57:00,CUSTOMS_HOLD,Gothenburg,
+219,7000073,2025-11-20 19:57:00,BOOKING_CREATED,,Held for documentation: missing packing list.
+220,7000073,2025-11-23 08:57:00,CUSTOMS_HOLD,Hamburg,Seal intact on arrival.
+221,7000073,2025-11-18 05:57:00,CUSTOMS_HOLD,Piraeus,Seal intact on arrival.
+222,7000073,2025-11-16 09:57:00,PICKED_UP,Antwerp,Seal intact on arrival.
+223,7000074,2026-01-20 05:36:58,CUSTOMS_HOLD,Piraeus,Partial offload; two pallets remain on board.
+224,7000074,2026-01-08 07:36:58,DELIVERED,Rotterdam,
+225,7000075,2025-08-31 02:47:09,DEPARTED,Constanta,"Driver reported congestion, 90 minutes lost."
+226,7000075,2025-08-31 00:47:09,DELIVERED,,
+227,7000075,2025-08-26 00:47:09,CUSTOMS_CLEARED,Constanta,
+228,7000075,2025-09-05 17:47:09,BOOKING_CREATED,Rotterdam,"Driver reported congestion, 90 minutes lost."
+229,7000075,2025-09-09 16:47:09,CUSTOMS_HOLD,,Held for documentation: missing packing list.
+230,7000076,2025-09-07 05:24:26,CUSTOMS_CLEARED,,Reefer unit logged -18 C throughout.
+231,7000076,2025-09-05 15:24:26,PICKED_UP,Gdansk,Held for documentation: missing packing list.
+232,7000076,2025-09-02 08:24:26,PICKED_UP,Piraeus,
+233,7000076,2025-09-03 03:24:26,CUSTOMS_HOLD,Hamburg,
+234,7000076,2025-09-01 11:24:26,BOOKING_CREATED,,Seal intact on arrival.
+235,7000077,2025-12-26 11:50:21,ARRIVED,Rotterdam,Held for documentation: missing packing list.
+236,7000078,2025-08-24 07:34:36,BOOKING_CREATED,,
+237,7000078,2025-08-28 12:34:36,CUSTOMS_CLEARED,Valencia,"Driver reported congestion, 90 minutes lost."
+238,7000079,2025-06-25 00:55:20,CUSTOMS_CLEARED,Piraeus,Reefer unit logged -18 C throughout.
+239,7000079,2025-06-20 14:55:20,DELAY_REPORTED,Trieste,Seal intact on arrival.
+240,7000080,2026-06-11 20:53:11,ARRIVED,Gothenburg,
+241,7000080,2026-06-11 07:53:11,BOOKING_CREATED,,Seal intact on arrival.
+242,7000080,2026-06-21 19:53:11,DEPARTED,Bremerhaven,
+243,7000080,2026-06-24 04:53:11,ARRIVED,Riga,
+244,7000080,2026-06-23 14:53:11,DEPARTED,,Partial offload; two pallets remain on board.
+245,7000081,2025-07-01 21:10:39,PICKED_UP,Riga,"Driver reported congestion, 90 minutes lost."
+246,7000082,2025-05-21 22:29:19,PICKED_UP,,Held for documentation: missing packing list.
+247,7000082,2025-05-13 11:29:19,DELAY_REPORTED,Gdansk,Held for documentation: missing packing list.
+248,7000082,2025-05-13 06:29:19,CUSTOMS_HOLD,Gothenburg,"Driver reported congestion, 90 minutes lost."
+249,7000082,2025-05-09 03:29:19,CUSTOMS_HOLD,Riga,Reefer unit logged -18 C throughout.
+250,7000083,2025-06-01 21:40:27,BOOKING_CREATED,Hamburg,Held for documentation: missing packing list.
+251,7000083,2025-05-30 09:40:27,PICKED_UP,Hamburg,
+252,7000083,2025-06-04 07:40:27,BOOKING_CREATED,Piraeus,
+253,7000083,2025-06-01 01:40:27,DELAY_REPORTED,,
+254,7000084,2025-08-25 22:04:15,DELIVERED,Gothenburg,
+255,7000084,2025-09-05 14:04:15,OUT_FOR_DELIVERY,Hamburg,
+256,7000084,2025-09-05 01:04:15,CUSTOMS_HOLD,Trieste,
+257,7000084,2025-09-05 00:04:15,CUSTOMS_CLEARED,Valencia,Partial offload; two pallets remain on board.
+258,7000085,2026-04-06 09:32:41,PICKED_UP,Hamburg,"Driver reported congestion, 90 minutes lost."
+259,7000085,2026-04-09 17:32:41,ARRIVED,Rotterdam,
+260,7000085,2026-04-12 10:32:41,BOOKING_CREATED,Hamburg,Seal intact on arrival.
+261,7000086,2025-04-11 16:53:54,DELIVERED,Rotterdam,"Driver reported congestion, 90 minutes lost."
+262,7000086,2025-04-04 22:53:54,DEPARTED,,
+263,7000086,2025-03-30 05:53:54,CUSTOMS_CLEARED,Trieste,Seal intact on arrival.
+264,7000087,2025-09-06 23:07:00,CUSTOMS_HOLD,,
+265,7000087,2025-09-20 05:07:00,CUSTOMS_CLEARED,Trieste,
+266,7000087,2025-09-09 06:07:00,DELIVERED,Valencia,Partial offload; two pallets remain on board.
+267,7000087,2025-09-15 12:07:00,DEPARTED,Hamburg,Partial offload; two pallets remain on board.
+268,7000088,2026-02-03 13:19:01,CUSTOMS_HOLD,Bremerhaven,
+269,7000088,2026-01-30 11:19:01,CUSTOMS_HOLD,Hamburg,"Driver reported congestion, 90 minutes lost."
+270,7000088,2026-01-20 19:19:01,BOOKING_CREATED,,"Driver reported congestion, 90 minutes lost."
+271,7000088,2026-01-27 09:19:01,CUSTOMS_CLEARED,Gdansk,Partial offload; two pallets remain on board.
+272,7000088,2026-02-03 10:19:01,BOOKING_CREATED,Gdansk,Reefer unit logged -18 C throughout.
+273,7000089,2026-07-11 00:10:41,DEPARTED,,
+274,7000090,2026-06-27 02:44:38,OUT_FOR_DELIVERY,Trieste,Reefer unit logged -18 C throughout.
+275,7000090,2026-06-24 23:44:38,PICKED_UP,,"Driver reported congestion, 90 minutes lost."
+276,7000090,2026-06-28 07:44:38,OUT_FOR_DELIVERY,Riga,Held for documentation: missing packing list.
+277,7000091,2025-12-19 13:01:58,DELAY_REPORTED,Rotterdam,Held for documentation: missing packing list.
+278,7000092,2025-04-25 03:57:11,DELIVERED,Antwerp,
+279,7000092,2025-04-28 15:57:11,DEPARTED,Constanta,Partial offload; two pallets remain on board.
+280,7000092,2025-05-08 04:57:11,DELIVERED,Valencia,
+281,7000092,2025-04-30 05:57:11,PICKED_UP,Gdansk,Partial offload; two pallets remain on board.
+282,7000093,2025-07-22 02:52:08,PICKED_UP,Constanta,
+283,7000093,2025-07-13 05:52:08,DELAY_REPORTED,Riga,"Driver reported congestion, 90 minutes lost."
+284,7000093,2025-07-21 14:52:08,CUSTOMS_HOLD,Bilbao,"Driver reported congestion, 90 minutes lost."
+285,7000094,2025-02-11 02:08:44,CUSTOMS_HOLD,,Reefer unit logged -18 C throughout.
+286,7000094,2025-01-29 21:08:44,CUSTOMS_HOLD,,Seal intact on arrival.
+287,7000094,2025-02-01 20:08:44,DELAY_REPORTED,,Held for documentation: missing packing list.
+288,7000095,2025-10-30 13:41:31,CUSTOMS_CLEARED,Gdansk,
+289,7000095,2025-11-02 02:41:31,CUSTOMS_CLEARED,Bremerhaven,
+290,7000096,2025-08-10 22:08:29,ARRIVED,Piraeus,
+291,7000096,2025-08-19 02:08:29,BOOKING_CREATED,Antwerp,
+292,7000096,2025-08-25 23:08:29,DELIVERED,Piraeus,
+293,7000097,2026-06-21 20:36:58,DEPARTED,Piraeus,
+294,7000097,2026-06-26 07:36:58,CUSTOMS_CLEARED,Rotterdam,Seal intact on arrival.
+295,7000097,2026-06-25 19:36:58,PICKED_UP,,Reefer unit logged -18 C throughout.
+296,7000097,2026-06-15 13:36:58,DELAY_REPORTED,,
+297,7000098,2025-02-16 21:23:41,OUT_FOR_DELIVERY,Gothenburg,Held for documentation: missing packing list.
+298,7000098,2025-02-27 03:23:41,DELAY_REPORTED,Bilbao,Partial offload; two pallets remain on board.
+299,7000099,2025-05-16 17:26:23,ARRIVED,Valencia,
+300,7000099,2025-05-11 02:26:23,OUT_FOR_DELIVERY,Trieste,Partial offload; two pallets remain on board.
+301,7000099,2025-05-06 18:26:23,BOOKING_CREATED,Bilbao,
+302,7000099,2025-05-15 02:26:23,DELAY_REPORTED,Riga,
+303,7000100,2025-06-28 18:08:47,BOOKING_CREATED,Riga,Held for documentation: missing packing list.
+304,7000100,2025-06-30 11:08:47,PICKED_UP,,"Driver reported congestion, 90 minutes lost."
+305,7000100,2025-07-03 14:08:47,CUSTOMS_CLEARED,Gdansk,"Driver reported congestion, 90 minutes lost."
+306,7000100,2025-06-26 04:08:47,DEPARTED,Bremerhaven,
+307,7000100,2025-06-24 13:08:47,CUSTOMS_HOLD,Gothenburg,
+308,7000101,2026-05-28 05:54:00,DELAY_REPORTED,,Held for documentation: missing packing list.
+309,7000101,2026-06-11 00:54:00,DELAY_REPORTED,Gothenburg,"Driver reported congestion, 90 minutes lost."
+310,7000102,2025-01-13 05:42:41,DELAY_REPORTED,Gothenburg,
+311,7000102,2025-01-17 00:42:41,CUSTOMS_HOLD,Riga,Held for documentation: missing packing list.
+312,7000103,2025-02-16 10:32:11,CUSTOMS_CLEARED,Antwerp,"Driver reported congestion, 90 minutes lost."
+313,7000103,2025-02-13 06:32:11,OUT_FOR_DELIVERY,Constanta,Seal intact on arrival.
+314,7000104,2025-12-24 02:11:13,DELAY_REPORTED,Gdansk,
+315,7000105,2025-10-15 02:17:02,CUSTOMS_HOLD,Piraeus,Held for documentation: missing packing list.
+316,7000106,2025-04-22 17:46:54,BOOKING_CREATED,Piraeus,Reefer unit logged -18 C throughout.
+317,7000106,2025-04-19 04:46:54,DEPARTED,Antwerp,
+318,7000107,2025-10-17 04:09:50,CUSTOMS_CLEARED,,"Driver reported congestion, 90 minutes lost."
+319,7000107,2025-10-16 04:09:50,ARRIVED,Valencia,Held for documentation: missing packing list.
+320,7000107,2025-10-03 19:09:50,BOOKING_CREATED,Gothenburg,
+321,7000108,2026-07-11 08:55:10,BOOKING_CREATED,Riga,"Driver reported congestion, 90 minutes lost."
+322,7000108,2026-07-23 12:55:10,ARRIVED,Piraeus,"Driver reported congestion, 90 minutes lost."
+323,7000108,2026-07-12 04:55:10,DEPARTED,,Seal intact on arrival.
+324,7000109,2025-08-13 11:17:11,BOOKING_CREATED,Gothenburg,Reefer unit logged -18 C throughout.
+325,7000110,2025-12-02 06:45:13,CUSTOMS_HOLD,Gdansk,
+326,7000110,2025-12-04 12:45:13,DELIVERED,Riga,Seal intact on arrival.
+327,7000111,2025-03-07 02:46:03,CUSTOMS_HOLD,Trieste,
+328,7000111,2025-03-10 03:46:03,DEPARTED,,Reefer unit logged -18 C throughout.
+329,7000111,2025-03-15 04:46:03,CUSTOMS_CLEARED,Hamburg,Partial offload; two pallets remain on board.
+330,7000112,2025-01-04 00:16:24,DEPARTED,,Seal intact on arrival.
+331,7000112,2025-01-11 21:16:24,PICKED_UP,Gothenburg,
+332,7000112,2025-01-17 12:16:24,OUT_FOR_DELIVERY,Valencia,
+333,7000113,2025-09-19 09:39:40,ARRIVED,Constanta,Partial offload; two pallets remain on board.
+334,7000113,2025-09-19 03:39:40,DEPARTED,Bilbao,Partial offload; two pallets remain on board.
+335,7000113,2025-09-22 21:39:40,DELIVERED,Rotterdam,
+336,7000113,2025-09-16 00:39:40,ARRIVED,Piraeus,
+337,7000113,2025-09-20 16:39:40,BOOKING_CREATED,Valencia,
+338,7000114,2026-01-14 08:37:16,ARRIVED,Piraeus,"Driver reported congestion, 90 minutes lost."
+339,7000114,2026-01-02 08:37:16,PICKED_UP,,"Driver reported congestion, 90 minutes lost."
+340,7000114,2026-01-05 03:37:16,ARRIVED,Gothenburg,"Driver reported congestion, 90 minutes lost."
+341,7000114,2026-01-09 21:37:16,BOOKING_CREATED,Gdansk,
+342,7000114,2026-01-07 17:37:16,PICKED_UP,Valencia,Reefer unit logged -18 C throughout.
+343,7000115,2026-03-08 03:04:32,CUSTOMS_CLEARED,Hamburg,
+344,7000115,2026-03-18 08:04:32,CUSTOMS_CLEARED,Gothenburg,
+345,7000115,2026-03-21 21:04:32,OUT_FOR_DELIVERY,,
+346,7000116,2026-03-19 13:01:24,CUSTOMS_HOLD,Hamburg,Partial offload; two pallets remain on board.
+347,7000116,2026-03-09 16:01:24,BOOKING_CREATED,Gothenburg,"Driver reported congestion, 90 minutes lost."
+348,7000117,2026-04-21 09:31:34,CUSTOMS_HOLD,Valencia,Held for documentation: missing packing list.
+349,7000117,2026-04-22 20:31:34,DEPARTED,Valencia,
+350,7000118,2025-07-26 19:38:52,DELAY_REPORTED,Riga,Partial offload; two pallets remain on board.
+351,7000118,2025-07-29 23:38:52,BOOKING_CREATED,Constanta,
+352,7000118,2025-07-25 06:38:52,DEPARTED,Gothenburg,
+353,7000118,2025-07-23 06:38:52,CUSTOMS_CLEARED,,"Driver reported congestion, 90 minutes lost."
+354,7000118,2025-07-22 05:38:52,BOOKING_CREATED,,Partial offload; two pallets remain on board.
+355,7000119,2025-06-08 09:47:49,CUSTOMS_HOLD,Bremerhaven,
+356,7000119,2025-06-04 05:47:49,ARRIVED,Gdansk,
+357,7000119,2025-05-30 17:47:49,ARRIVED,Constanta,Reefer unit logged -18 C throughout.
+358,7000119,2025-05-29 12:47:49,BOOKING_CREATED,Rotterdam,

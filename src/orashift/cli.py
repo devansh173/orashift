@@ -7,6 +7,7 @@ phases exit with a clear message rather than pretending to work.
 
 from __future__ import annotations
 
+from enum import StrEnum
 from pathlib import Path
 from typing import Annotated, NoReturn
 
@@ -14,10 +15,13 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from orashift import __version__, db
+from orashift import __version__, catalog, db
 from orashift.config import Settings, get_settings
 from orashift.db.base import ServerInfo
 from orashift.logging import configure_logging, get_logger
+from orashift.seed import generate as seed_generate
+from orashift.seed import load as seed_load
+from orashift.seed import verify as seed_verify
 
 app = typer.Typer(
     name="orashift",
@@ -115,10 +119,126 @@ def check_connections() -> None:
         raise typer.Exit(code=1)
 
 
+class SeedTarget(StrEnum):
+    """Which engine(s) a seed run should touch."""
+
+    ORACLE = "oracle"
+    POSTGRES = "postgres"
+    BOTH = "both"
+
+
+def _resolve_schemas(names: list[str] | None) -> list[catalog.Schema]:
+    if not names:
+        return list(catalog.SCHEMAS.values())
+    return [catalog.get_schema(name) for name in names]
+
+
+def _print_seed_summary(title: str, loaded: dict[str, dict[str, int]]) -> None:
+    table = Table(title=title, title_justify="left")
+    table.add_column("Schema", style="bold")
+    table.add_column("Table")
+    table.add_column("Rows", justify="right")
+    for schema_name, tables in loaded.items():
+        for index, (table_name, rows) in enumerate(tables.items()):
+            table.add_row(schema_name if index == 0 else "", table_name, str(rows))
+    console.print(table)
+
+
+def _print_verification(results: dict[str, list[seed_verify.TableComparison]]) -> bool:
+    table = Table(title="Oracle vs PostgreSQL seed data", title_justify="left")
+    table.add_column("Schema", style="bold")
+    table.add_column("Table")
+    table.add_column("Oracle", justify="right")
+    table.add_column("Postgres", justify="right")
+    table.add_column("Digest")
+    table.add_column("Match")
+
+    all_ok = True
+    for schema_name, comparisons in results.items():
+        for index, comparison in enumerate(comparisons):
+            all_ok = all_ok and comparison.ok
+            table.add_row(
+                schema_name if index == 0 else "",
+                comparison.table,
+                str(comparison.oracle_rows),
+                str(comparison.postgres_rows),
+                comparison.oracle_digest[:12],
+                "[green]yes[/]" if comparison.ok else "[red]NO[/]",
+            )
+    console.print(table)
+    return all_ok
+
+
 @app.command()
-def seed() -> None:
+def seed(
+    schema: Annotated[
+        list[str] | None,
+        typer.Option("--schema", "-s", help="Schema to load; repeatable. Default: all."),
+    ] = None,
+    target: Annotated[
+        SeedTarget,
+        typer.Option("--target", "-t", help="Which engine(s) to load."),
+    ] = SeedTarget.BOTH,
+    drop: Annotated[
+        bool,
+        typer.Option(
+            "--drop/--no-drop", help="Drop existing objects first, making the run idempotent."
+        ),
+    ] = True,
+    regenerate: Annotated[
+        bool,
+        typer.Option(
+            "--regenerate", help="Rewrite the seed CSVs from the fixed seed before loading."
+        ),
+    ] = False,
+    check: Annotated[
+        bool,
+        typer.Option("--verify/--no-verify", help="After loading both engines, compare the data."),
+    ] = True,
+) -> None:
     """Load the synthetic schemas and seed data into Oracle and PostgreSQL."""
-    _not_implemented(1, "seed")
+    settings = get_settings()
+    schemas = _resolve_schemas(schema)
+
+    if regenerate:
+        counts = seed_generate.generate_all()
+        total = sum(rows for tables in counts.values() for rows in tables.values())
+        console.print(
+            f"Regenerated {total} rows of seed data into {seed_generate.DEFAULT_OUT_DIR}/"
+        )
+
+    dialects = {
+        SeedTarget.ORACLE: [seed_load.ORACLE],
+        SeedTarget.POSTGRES: [seed_load.POSTGRES],
+        SeedTarget.BOTH: [seed_load.ORACLE, seed_load.POSTGRES],
+    }[target]
+
+    for dialect in dialects:
+        loaded: dict[str, dict[str, int]] = {}
+        for schema_def in schemas:
+            try:
+                loaded[schema_def.name] = seed_load.seed_schema(
+                    settings, schema_def, dialect, drop=drop
+                )
+            except Exception as exc:
+                err_console.print(
+                    f"[red]{dialect.name}: failed loading schema {schema_def.name}:[/] {exc}"
+                )
+                raise typer.Exit(code=1) from exc
+        _print_seed_summary(f"Loaded into {dialect.name}", loaded)
+
+    if not check:
+        return
+    if target is not SeedTarget.BOTH:
+        console.print("[yellow]Skipping comparison: it needs both engines loaded.[/]")
+        return
+
+    results = {s.name: seed_verify.compare_schema(settings, s) for s in schemas}
+    if _print_verification(results):
+        console.print("[green]Both engines hold identical seed data.[/]")
+    else:
+        err_console.print("[red]Seed data differs between the engines.[/]")
+        raise typer.Exit(code=1)
 
 
 @app.command()

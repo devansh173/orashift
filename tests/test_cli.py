@@ -11,14 +11,29 @@ from orashift.cli import _not_implemented, app
 
 runner = CliRunner()
 
-LATER_PHASE_COMMANDS = ["seed", "generate", "verify", "build-dataset", "eval"]
+# Commands still stubbed out. `seed` landed in phase 1 and is covered by the
+# db-marked tests, so it must not be invoked here: that would hit real databases.
+LATER_PHASE_COMMANDS = ["generate", "verify", "build-dataset", "eval"]
+IMPLEMENTED_COMMANDS = ["check-connections", "seed", "version"]
 
 
 def test_help_lists_the_whole_pipeline():
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    for command in ["check-connections", *LATER_PHASE_COMMANDS, "translate"]:
+    for command in [*IMPLEMENTED_COMMANDS, *LATER_PHASE_COMMANDS, "translate"]:
         assert command in result.output
+
+
+@pytest.mark.parametrize("command", IMPLEMENTED_COMMANDS)
+def test_implemented_commands_have_help(command: str):
+    """--help must work without touching a database."""
+    result = runner.invoke(app, [command, "--help"])
+    assert result.exit_code == 0
+
+
+def test_seed_rejects_an_unknown_schema():
+    result = runner.invoke(app, ["seed", "--schema", "retial"])
+    assert result.exit_code != 0
 
 
 def test_version_command():

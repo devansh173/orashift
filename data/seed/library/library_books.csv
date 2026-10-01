@@ -1,0 +1,68 @@
+book_id,isbn13,title,author_id,published_on,page_count,summary
+1,9780000000001,Her Hidden Cartographer,14,2006-09-27 21:14:59,542,"Chapter one opens mid-sentence;
+the effect is deliberate."
+2,9780000000002,The Distant Orchard,20,2001-05-10 11:47:42,,"Includes an index, a glossary, and forty pages of notes."
+3,9780000000003,A Quiet Orchard,13,2000-11-01 17:22:06,500,"The author's first novel, written while working nights."
+4,9780000000004,No Final Archive,4,2006-04-20 16:29:08,771,"Chapter one opens mid-sentence;
+the effect is deliberate."
+5,9780000000005,Her Patient Lighthouse,28,1998-06-04 07:44:02,666,"Includes an index, a glossary, and forty pages of notes."
+6,9780000000006,The Distant Harbour,28,1997-06-14 08:17:33,,
+7,9780000000007,Her Distant Lighthouse,23,2018-04-11 18:45:28,,"The author's first novel, written while working nights."
+8,9780000000008,A Patient Cartographer,10,1997-08-31 08:20:49,480,"A slow, careful study of memory and place."
+9,9780000000009,No Final Lighthouse,13,2013-04-03 19:00:47,89,"A slow, careful study of memory and place."
+10,9780000000010,The Distant Lighthouse,8,2011-02-24 08:52:26,530,"Includes an index, a glossary, and forty pages of notes."
+11,9780000000011,No Broken Signal,19,2009-04-17 12:44:00,734,"Essays on infrastructure, collected from a decade of reporting."
+12,9780000000012,A Broken Orchard,17,2024-08-15 17:34:38,208,
+13,9780000000013,The Broken Orchard,23,,802,
+14,9780000000014,A Golden Archive,22,2011-09-22 17:38:57,320,"Chapter one opens mid-sentence;
+the effect is deliberate."
+15,9780000000015,A Golden Winter,16,2009-07-09 06:12:39,605,"The author's first novel, written while working nights."
+16,9780000000016,No Hidden Cartographer,18,1995-11-11 08:37:28,,"Includes an index, a glossary, and forty pages of notes."
+17,9780000000017,The Final Orchard,17,2022-11-24 07:38:09,192,"A slow, careful study of memory and place."
+18,9780000000018,Her Golden Cartographer,18,1997-10-28 08:44:58,736,"The author's first novel, written while working nights."
+19,9780000000019,Our Hidden Orchard,6,2000-02-25 08:08:02,712,
+20,9780000000020,The Broken Signal,11,2011-08-19 19:42:56,600,"The author's first novel, written while working nights."
+21,9780000000021,A Broken Archive,29,2009-08-12 08:30:13,,
+22,9780000000022,A Patient Harbour,17,2016-07-22 15:36:31,318,"A slow, careful study of memory and place."
+23,9780000000023,The Patient Signal,10,2008-11-16 14:22:27,750,"A slow, careful study of memory and place."
+24,9780000000024,No Patient Signal,22,,362,
+25,9780000000025,No Final Winter,26,2011-07-18 14:15:57,344,
+26,9780000000026,No Hidden Cartographer,10,2003-08-20 13:18:03,361,"The author's first novel, written while working nights."
+27,9780000000027,Our Golden Orchard,15,1998-01-06 14:47:32,126,"A slow, careful study of memory and place."
+28,9780000000028,The Hidden Signal,13,1999-07-23 08:42:08,761,
+29,9780000000029,The Patient Signal,17,2012-09-02 19:01:22,625,"The author's first novel, written while working nights."
+30,9780000000030,Our Final Archive,13,2013-05-10 19:38:40,536,"The author's first novel, written while working nights."
+31,9780000000031,No Broken Harbour,23,2022-12-02 14:53:54,296,"The author's first novel, written while working nights."
+32,9780000000032,The Distant Orchard,25,,180,"Chapter one opens mid-sentence;
+the effect is deliberate."
+33,9780000000033,A Quiet Orchard,17,2007-07-11 21:23:00,355,"The author's first novel, written while working nights."
+34,9780000000034,Her Distant Orchard,19,2012-04-19 15:45:19,152,"Essays on infrastructure, collected from a decade of reporting."
+35,9780000000035,The Patient Winter,5,1998-10-25 20:43:54,576,
+36,9780000000036,Our Broken Winter,6,2013-02-01 17:58:19,419,"Essays on infrastructure, collected from a decade of reporting."
+37,9780000000037,Her Golden Harbour,23,2000-08-17 21:04:27,658,"Essays on infrastructure, collected from a decade of reporting."
+38,9780000000038,Her Distant Archive,4,2004-05-24 13:39:23,569,
+39,9780000000039,Her Patient Winter,16,2012-09-26 17:15:38,,
+40,9780000000040,A Distant Signal,18,2000-03-22 11:18:28,185,"Essays on infrastructure, collected from a decade of reporting."
+41,9780000000041,Our Distant Lighthouse,1,2011-11-03 10:54:09,127,"Chapter one opens mid-sentence;
+the effect is deliberate."
+42,9780000000042,A Final Signal,1,2019-05-13 11:33:29,583,
+43,9780000000043,The Quiet Orchard,11,2012-02-22 16:40:52,838,"Essays on infrastructure, collected from a decade of reporting."
+44,9780000000044,The Final Harbour,29,2009-01-15 14:22:58,330,"The author's first novel, written while working nights."
+45,9780000000045,A Final Winter,3,,85,"The author's first novel, written while working nights."
+46,9780000000046,Our Quiet Cartographer,16,2005-05-26 10:33:55,844,"Essays on infrastructure, collected from a decade of reporting."
+47,9780000000047,A Patient Archive,16,2005-09-18 09:11:36,514,
+48,9780000000048,The Broken Cartographer,24,2024-08-18 06:38:31,259,
+49,9780000000049,A Broken Archive,24,2011-09-06 14:41:01,,"The author's first novel, written while working nights."
+50,9780000000050,No Final Archive,30,2017-06-10 18:18:40,202,"A slow, careful study of memory and place."
+51,9780000000051,The Distant Archive,5,2009-11-19 14:17:02,323,"Essays on infrastructure, collected from a decade of reporting."
+52,9780000000052,A Patient Cartographer,24,2004-11-25 22:15:17,535,"The author's first novel, written while working nights."
+53,9780000000053,No Hidden Lighthouse,19,2015-04-17 10:25:51,484,"The author's first novel, written while working nights."
+54,9780000000054,No Quiet Winter,28,2011-12-27 15:13:38,,"Essays on infrastructure, collected from a decade of reporting."
+55,9780000000055,A Patient Cartographer,7,2003-12-30 10:50:32,507,"Chapter one opens mid-sentence;
+the effect is deliberate."
+56,9780000000056,No Final Signal,7,2024-05-09 17:29:23,279,"A slow, careful study of memory and place."
+57,9780000000057,Our Hidden Lighthouse,21,1998-06-19 13:50:19,239,"A slow, careful study of memory and place."
+58,9780000000058,A Hidden Archive,3,2006-04-03 15:58:14,548,"Chapter one opens mid-sentence;
+the effect is deliberate."
+59,9780000000059,Our Final Archive,22,2014-10-30 20:40:36,785,"Essays on infrastructure, collected from a decade of reporting."
+60,9780000000060,Her Final Orchard,13,2023-11-27 11:09:28,568,

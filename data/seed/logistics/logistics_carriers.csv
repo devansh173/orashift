@@ -1,0 +1,9 @@
+carrier_id,carrier_name,scac_code,is_bonded
+1,Noordzee Freight,NZFR,1
+2,Baltica Lines,BLTC,0
+3,Alpen Kombi,ALPK,1
+4,Iberia Rail Cargo,IBRC,0
+5,Adriatic Roro,ADRR,0
+6,Vistula Haulage,,0
+7,Nordic Express,NDEX,1
+8,Aegean Bulk,,0

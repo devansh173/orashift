@@ -1,0 +1,13 @@
+job_id,job_title,min_salary,max_salary
+AD_PRES,President,20000.00,40000.00
+AD_VP,Vice President,15000.00,30000.00
+IT_PROG,Programmer,4000.00,10000.00
+IT_LEAD,Engineering Lead,8000.00,16000.00
+FI_ACCT,Accountant,4200.00,9000.00
+FI_MGR,Finance Manager,8200.00,16000.00
+SA_REP,Sales Representative,6000.00,12000.00
+SA_MAN,Sales Manager,10000.00,20000.00
+OP_CLERK,Operations Clerk,2500.00,5500.00
+SU_AGENT,Support Agent,2800.00,6000.00
+LG_COUNSEL,Legal Counsel,9000.00,18000.00
+HR_PART,People Partner,5000.00,11000.00
