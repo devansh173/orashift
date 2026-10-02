@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset ora2pg-pull up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset check-notebooks ora2pg-pull up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -22,8 +22,9 @@ test:  ## Run the unit tests (no database needed)
 test-db:  ## Run the tests that need live databases
 	$(UV) run pytest -m db
 
-check: lint  ## Everything CI runs: lint, format check, unit tests
+check: lint  ## Everything CI runs: lint, format check, notebooks, unit tests
 	$(UV) run ruff format --check .
+	$(UV) run python scripts/check_notebooks.py
 	$(UV) run pytest -m "not db"
 
 check-connections:  ## Print the Oracle and PostgreSQL server versions
@@ -40,6 +41,9 @@ generate:  ## Build the Oracle source-unit pool and verify it against Oracle
 
 verify:  ## Translate every unit and verify it by execution on both engines
 	$(UV) run orashift verify --show-failures
+
+check-notebooks:  ## Statically validate the Kaggle notebooks
+	$(UV) run python scripts/check_notebooks.py
 
 dataset:  ## Build the train/val/test JSONL splits and the dataset card
 	$(UV) run orashift build-dataset

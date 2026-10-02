@@ -297,3 +297,29 @@ def test_card_renders_from_a_report():
     text = card.render(report)
     assert "pivot" in text
     assert "## Splits" in text
+
+
+# --------------------------------------------------------------------------- #
+# Notebooks
+#
+# These run on Kaggle, not here, so they cannot be executed by the test suite.
+# Static checking is what stops a typo from wasting a 40-minute GPU session.
+# --------------------------------------------------------------------------- #
+
+
+def test_every_notebook_cell_is_valid_python():
+    import sys
+
+    sys.path.insert(0, "scripts")
+    from check_notebooks import check  # type: ignore[import-not-found]
+
+    notebooks = sorted(Path("notebooks").glob("*.ipynb"))
+    assert notebooks, "no notebooks found"
+    for path in notebooks:
+        assert check(path) == [], f"{path} failed static checks"
+
+
+def test_the_training_notebook_says_it_is_unverified():
+    """It ships unrun, and must not imply otherwise."""
+    text = Path("notebooks/train_qlora.ipynb").read_text(encoding="utf-8")
+    assert "has not been executed by its author" in text

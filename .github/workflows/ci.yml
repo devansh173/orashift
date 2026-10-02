@@ -29,6 +29,11 @@ jobs:
       - name: Check formatting
         run: uv run ruff format --check .
 
+      # The Kaggle notebooks cannot be run here, so they are checked statically:
+      # valid JSON, every code cell parses, no committed output.
+      - name: Validate notebooks
+        run: uv run python scripts/check_notebooks.py
+
       # Tests marked `db` need a live Oracle and PostgreSQL, so they are
       # excluded here and run locally with `make test-db`.
       - name: Unit tests

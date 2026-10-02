@@ -49,6 +49,11 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ANN"]
+# Notebooks are linted for real errors, but not for conventions that do not
+# apply to them: type annotations on throwaway helpers, and import order.
+# Unsloth must be imported before transformers, so E402/I001 would fight the
+# library's own requirement.
+"notebooks/**" = ["ANN", "E402", "I001", "E401"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["orashift"]

@@ -913,3 +913,135 @@ At about 1.6 MB across six files that is a cheap trade.
 The Hub copy is additional rather than the primary location, partly because the push could
 not be tested from this machine (same 403 as D37) and partly because a repository should
 not depend on an external service to be readable.
+
+---
+
+## D40 — Qwen2.5-Coder-3B-Instruct, loaded in 4-bit
+
+**Decision.** Fine-tune `Qwen2.5-Coder-3B-Instruct` with QLoRA, via Unsloth's pre-quantised
+`unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit`.
+
+**Alternatives.**
+- *A 7B coder model.* More capable.
+- *A 1.5B model.* Faster, more headroom.
+- *`Qwen3-Coder-Next`.* Newer, and only 3B parameters active per token.
+- *A general-purpose 3B rather than a coder model.*
+
+**Why.** SQL is code, so a code-pretrained base starts much closer to the task. 3B in 4-bit
+is about 1.8 GB of weights, which leaves room on a 16 GB T4 for activations at 2 048
+tokens; 7B in 4-bit is around 4 GB and would force the sequence length or batch size down
+far enough to hurt. It is also Apache-2.0, so there is no licensing caveat to explain.
+
+`Qwen3-Coder-Next` was ruled out on memory, not quality: it is a mixture of experts with
+80 B total parameters and only 3 B active per token, and the *full* weights still have to
+be loaded. The active-parameter count is about compute, not memory.
+
+**Cost accepted.** A 3B model is small. If the fine-tune underperforms, model size is a
+plausible cause and the project cannot distinguish that from a data problem without
+running a larger model somewhere with more memory. Stated as a limitation rather than
+discovered later.
+
+---
+
+## D41 — LoRA on all seven projections, rank 16
+
+**Decision.** `r=16`, `lora_alpha=16`, `lora_dropout=0`, applied to `q_proj`, `k_proj`,
+`v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`. Roughly 30 M trainable parameters,
+about 1% of the model.
+
+**Alternatives.**
+- *Attention only (`q,k,v,o`).* The original LoRA paper's setup, and cheaper.
+- *`r=8`.* Half the trainable parameters.
+- *`r=64`.* More capacity for a larger domain shift.
+- *`alpha = 2r`.* A common default.
+
+**Why.** The MLP projections are included because much of what this task needs is
+token-level rewriting — `NVL` to `COALESCE`, `ROWNUM` to `LIMIT` — and that lives more in
+the MLP than in attention. Attention-only would be cheaper but is the wrong economy here.
+
+`r=16` is the middle of the usual range: the task is narrow, so 64 would mostly add
+parameters to overfit 418 examples with. Dropout is 0 because Unsloth's fast kernels
+require it; regularisation comes from the epoch count instead.
+
+`alpha = r` makes the adapter scale `alpha/r = 1.0`. Setting `alpha = 2r` is a common
+shortcut for "double the adapter's learning rate", and it was skipped so that the learning
+rate stays the only knob controlling step size.
+
+**Verification.** The notebook prints the real trainable-parameter count rather than
+trusting the arithmetic, and writes it to `train_run.json`.
+
+---
+
+## D42 — Loss on assistant tokens only
+
+**Decision.** `train_on_responses_only`, masking everything before Qwen's
+`<|im_start|>assistant` marker out of the loss.
+
+**Alternatives.**
+- *Loss over the whole sequence,* which is the trainer's default.
+- *Drop the schema context from the prompt* so there is less to mask.
+
+**Why.** By default the model is also trained to produce the system prompt and the Oracle
+input — text it will never need to generate at inference. That spends capacity on the
+wrong objective and measurably degrades output quality. Here the system prompt carries the
+table DDL, so it is the *largest* part of most examples: training on it would mean most of
+the gradient signal came from reproducing schema definitions.
+
+Dropping the context instead would make the task harder and less realistic, since anyone
+translating a query has the schema in front of them.
+
+**How this is kept honest.** The notebook decodes one masked example and prints only the
+tokens that still carry loss. If that output is anything other than a bare PostgreSQL
+statement, the mask is wrong and training would quietly learn the wrong thing. Silent
+mis-masking is one of the easier ways to waste a GPU session.
+
+---
+
+## D43 — The notebooks ship unexecuted, and are checked statically
+
+**Decision.** `notebooks/train_qlora.ipynb` was written on a machine with no GPU and a
+network that blocks huggingface.co, so it has never been run. That is stated in the first
+markdown cell, in `notebooks/README.md`, and enforced by a test. In its place,
+`scripts/check_notebooks.py` validates the notebook JSON, parses every code cell as Python,
+and fails if any cell has committed output. It runs in CI.
+
+**Alternatives.**
+- *Do not commit a notebook until it has been run.*
+- *Commit it with no checking and rely on the operator.*
+- *Run the notebook in CI.*
+
+**Why.** Running it in CI would need a GPU runner and a model download on every push, which
+is not justifiable for a portfolio project. Withholding the notebook until it had been run
+would stall the project on hardware that is not available here.
+
+Static checking cannot catch a wrong API call against a library version, and it is not
+claimed to. What it does catch is the failure that wastes a GPU session most often: a typo
+that only surfaces when the cell executes. It earned its place immediately — the first run
+found an escaped docstring that would have failed several minutes into training.
+
+**Cost accepted.** The notebook may still fail on Kaggle for a version-drift reason. The
+mitigation is structural: every stage asserts its assumptions and prints what it found, so
+a failure happens in the first minute rather than the thirtieth, and the markdown above
+each risky cell names the likely cause.
+
+---
+
+## D44 — TensorBoard by default, Weights & Biases behind a flag
+
+**Decision.** Logging goes to TensorBoard. `USE_WANDB = True` plus a `WANDB_API_KEY`
+Kaggle secret switches to W&B, and a missing secret falls back rather than failing.
+
+**Alternatives.**
+- *W&B by default.* Gives a shareable dashboard link, which is worth something in a
+  portfolio.
+- *No experiment tracking.*
+
+**Why.** W&B needs an account, and a notebook whose default path requires one is a notebook
+most readers cannot run. TensorBoard needs nothing, logs the same curves, and keeps them in
+the notebook output. The fallback is deliberate: a missing secret must not fail a run that
+otherwise succeeded, because by then a GPU session has already been spent.
+
+**Related.** The dataset reaches Kaggle by `git clone` of this public repository rather
+than a Kaggle Dataset upload. That way the training data always matches what is committed,
+and anyone reproducing the work gets the identical files with no manual step. It needs
+Kaggle's internet toggle, which the model download requires anyway.
