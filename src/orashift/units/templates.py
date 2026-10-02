@@ -82,6 +82,7 @@ ROW_LIMIT = [
         C.ROWNUM,
         "SELECT {fact_pk} FROM {fact} WHERE ROWNUM <= {n}",
         params={"n": ("3", "10", "25")},
+        value_comparable=False,
     ),
     _t(
         "rownum_ordered_subquery",
@@ -96,6 +97,7 @@ ROW_LIMIT = [
         C.ROWNUM,
         "SELECT ROWNUM AS rn, {fact_pk} FROM {fact} WHERE ROWNUM <= {n}",
         params={"n": ("8",)},
+        value_comparable=False,
     ),
     _t(
         "rownum_pagination",
@@ -112,6 +114,7 @@ ROW_LIMIT = [
         """SELECT {fact_pk}, {fact_date} FROM {fact}
           WHERE {fact_date} IS NOT NULL AND ROWNUM <= {n}""",
         params={"n": ("6",)},
+        value_comparable=False,
     ),
     _t(
         "fetch_first_basic",
@@ -395,7 +398,16 @@ DATES = [
         C.SYSDATE,
         "SELECT COUNT(*) AS n FROM {fact} WHERE {fact_date} < SYSDATE",
     ),
-    _t("sysdate_trunc", C.SYSDATE, "SELECT TRUNC(SYSDATE) AS today FROM dual"),
+    _t(
+        "sysdate_trunc",
+        C.SYSDATE,
+        "SELECT TRUNC(SYSDATE) AS today FROM dual",
+        # Shape-only: the two engines are queried a few milliseconds apart, so a
+        # run that straddles midnight legitimately gets different answers. This
+        # was the residual risk recorded in decisions.md D25, and a verification
+        # run crossing midnight duly hit it.
+        value_comparable=False,
+    ),
     _t(
         "sysdate_window",
         C.SYSDATE,
@@ -545,6 +557,7 @@ IDIOMS = [
           UNION ALL
           SELECT {dim_pk} AS k FROM {dim} WHERE ROWNUM <= 5""",
         requires=("dim", "dim_pk"),
+        value_comparable=False,
     ),
     _t(
         "listagg_basic",
@@ -569,6 +582,7 @@ IDIOMS = [
         """SELECT LISTAGG(TO_CHAR({dim_pk}), '|') WITHIN GROUP (ORDER BY {dim_pk}) AS all_ids
           FROM (SELECT {dim_pk} FROM {dim} WHERE ROWNUM <= 10)""",
         requires=("dim", "dim_pk"),
+        value_comparable=False,
     ),
     _t(
         "pivot_status_counts",
@@ -583,6 +597,7 @@ IDIOMS = [
         """SELECT * FROM
             (SELECT {fact_pk}, {fact_date} AS d1, {fact_date} AS d2 FROM {fact} WHERE ROWNUM <= 5)
           UNPIVOT (val FOR which IN (d1, d2))""",
+        value_comparable=False,
     ),
     _t(
         "sequence_nextval",
@@ -986,6 +1001,7 @@ DML = [
         unit_type=UnitType.DML,
         requires=("dim", "dim_pk"),
         affects=("fact",),
+        value_comparable=False,
     ),
     _t(
         "dml_delete_filtered",
@@ -1092,3 +1108,61 @@ def render_all() -> Iterator[tuple[Template, Anchors, str, dict[str, str]]]:
         for anchors in ANCHORS.values():
             for sql, combo in render(template, anchors):
                 yield template, anchors, sql, combo
+
+
+HELD_OUT_TEMPLATES: frozenset[str] = frozenset(
+    {
+        # Row limiting
+        "rownum_pagination",
+        "fetch_with_ties",
+        # Null handling
+        "nvl2_date",
+        "decode_dim",
+        "concat_guarded",
+        # Joins
+        "plus_right_outer",
+        "connect_by_isleaf",
+        # Dates
+        "sysdate_window",
+        "to_char_date_part",
+        "months_between_rounded",
+        "trunc_date_group",
+        # Idioms
+        "dual_greatest",
+        "intersect_basic",
+        "listagg_distinct",
+        "unpivot_basic",
+        # General SQL
+        "analytic_ntile",
+        "subquery_scalar",
+        "cte_two",
+        "aggregate_grouping_sets",
+        "string_replace",
+        # DDL
+        "ddl_table_composite_pk",
+        "ddl_sequence_options",
+        "ddl_view_aggregate",
+        # DML
+        "dml_delete_subquery",
+        "merge_with_condition",
+    }
+)
+"""Templates withheld from training entirely, as a second generalisation axis.
+
+Holding out a schema alone measures less than it appears to: if the same
+template is seen during training as `retail` and tested as `logistics`, the
+model has already met that exact translation pattern and only the table names
+are new. Withholding whole templates as well gives three honest test buckets --
+unseen schema, unseen template, and unseen both.
+
+Every one of these is a secondary variant of its category, so each category is
+still represented in training. A test enforces that.
+"""
+
+
+def training_templates() -> list[Template]:
+    return [t for t in ALL_TEMPLATES if t.id not in HELD_OUT_TEMPLATES]
+
+
+def held_out_templates() -> list[Template]:
+    return [t for t in ALL_TEMPLATES if t.id in HELD_OUT_TEMPLATES]

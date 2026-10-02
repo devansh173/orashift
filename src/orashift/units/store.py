@@ -40,6 +40,25 @@ CREATE TABLE IF NOT EXISTS units (
 CREATE INDEX IF NOT EXISTS units_ix_status   ON units (status);
 CREATE INDEX IF NOT EXISTS units_ix_category ON units (category, unit_type);
 CREATE INDEX IF NOT EXISTS units_ix_schema   ON units (schema_name);
+
+-- One row per (unit, candidate source). Making that pair the primary key is
+-- what makes verification resumable: an attempt already recorded is skipped.
+CREATE TABLE IF NOT EXISTS attempts (
+    unit_key        TEXT NOT NULL,
+    candidate_source TEXT NOT NULL,
+    translated_sql  TEXT,
+    status          TEXT NOT NULL,
+    reason          TEXT,
+    detail          TEXT,
+    ran_on_postgres INTEGER NOT NULL DEFAULT 0,
+    oracle_rows     INTEGER,
+    postgres_rows   INTEGER,
+    duration_ms     REAL,
+    created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (unit_key, candidate_source)
+);
+
+CREATE INDEX IF NOT EXISTS attempts_ix_source ON attempts (candidate_source, status);
 """
 
 
@@ -85,10 +104,19 @@ def upsert_units(conn: sqlite3.Connection, units: Sequence[Unit]) -> int:
     before = conn.execute("SELECT COUNT(*) FROM units").fetchone()[0]
     conn.executemany(
         """
-        INSERT OR IGNORE INTO units
+        INSERT INTO units
             (unit_key, schema_name, unit_type, category, sql_text,
              normalized_sql, source, template_id, status, metadata)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT (unit_key) DO UPDATE SET
+            -- Template metadata is refreshed so that changing a flag on a
+            -- template (for instance marking it shape-comparable only) reaches
+            -- units that already exist. Verification columns are deliberately
+            -- left alone, which is what keeps a rerun resumable.
+            metadata = excluded.metadata,
+            template_id = excluded.template_id,
+            category = excluded.category,
+            normalized_sql = excluded.normalized_sql
         """,
         [
             (
@@ -180,5 +208,116 @@ def yield_report(conn: sqlite3.Connection) -> list[dict[str, object]]:
          GROUP BY unit_type, category
          ORDER BY unit_type, category
         """
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
+# --------------------------------------------------------------------------- #
+# Translation attempts
+# --------------------------------------------------------------------------- #
+
+
+def record_attempt(
+    conn: sqlite3.Connection,
+    unit_key: str,
+    source: str,
+    *,
+    translated_sql: str | None,
+    ok: bool,
+    reason: str | None = None,
+    detail: str | None = None,
+    ran_on_postgres: bool = False,
+    oracle_rows: int | None = None,
+    postgres_rows: int | None = None,
+    duration_ms: float | None = None,
+) -> None:
+    """Store one verification attempt, replacing any earlier result for that pair."""
+    conn.execute(
+        """
+        INSERT INTO attempts
+            (unit_key, candidate_source, translated_sql, status, reason, detail,
+             ran_on_postgres, oracle_rows, postgres_rows, duration_ms)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT (unit_key, candidate_source) DO UPDATE SET
+            translated_sql = excluded.translated_sql,
+            status = excluded.status,
+            reason = excluded.reason,
+            detail = excluded.detail,
+            ran_on_postgres = excluded.ran_on_postgres,
+            oracle_rows = excluded.oracle_rows,
+            postgres_rows = excluded.postgres_rows,
+            duration_ms = excluded.duration_ms,
+            created_at = datetime('now')
+        """,
+        (
+            unit_key,
+            source,
+            translated_sql,
+            "verified" if ok else "failed",
+            reason,
+            detail,
+            int(ran_on_postgres),
+            oracle_rows,
+            postgres_rows,
+            duration_ms,
+        ),
+    )
+
+
+def attempted_keys(conn: sqlite3.Connection, source: str) -> set[str]:
+    """Unit keys already attempted for this source, so a rerun can skip them."""
+    return {
+        row[0]
+        for row in conn.execute(
+            "SELECT unit_key FROM attempts WHERE candidate_source = ?", (source,)
+        )
+    }
+
+
+def attempt_report(conn: sqlite3.Connection) -> list[dict[str, object]]:
+    """Execution accuracy per source, unit type and category."""
+    rows = conn.execute(
+        """
+        SELECT a.candidate_source                       AS source,
+               u.unit_type                              AS unit_type,
+               u.category                               AS category,
+               COUNT(*)                                 AS attempted,
+               SUM(a.status = 'verified')               AS verified,
+               SUM(a.ran_on_postgres)                   AS ran
+          FROM attempts a JOIN units u ON u.unit_key = a.unit_key
+         GROUP BY a.candidate_source, u.unit_type, u.category
+         ORDER BY a.candidate_source, u.unit_type, u.category
+        """
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def source_totals(conn: sqlite3.Connection) -> list[dict[str, object]]:
+    """Headline numbers per candidate source."""
+    rows = conn.execute(
+        """
+        SELECT candidate_source                 AS source,
+               COUNT(*)                         AS attempted,
+               SUM(status = 'verified')         AS verified,
+               SUM(ran_on_postgres)             AS ran
+          FROM attempts
+         GROUP BY candidate_source
+         ORDER BY verified DESC
+        """
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def verified_pairs(conn: sqlite3.Connection, source: str = "gold") -> list[dict[str, object]]:
+    """The execution-verified Oracle/PostgreSQL pairs, for phase 4."""
+    rows = conn.execute(
+        """
+        SELECT u.unit_key, u.schema_name, u.unit_type, u.category, u.template_id,
+               u.sql_text AS oracle_sql, a.translated_sql AS postgres_sql
+          FROM attempts a JOIN units u ON u.unit_key = a.unit_key
+         WHERE a.candidate_source = ? AND a.status = 'verified'
+         ORDER BY u.schema_name, u.category, u.unit_key
+        """,
+        (source,),
     ).fetchall()
     return [dict(row) for row in rows]

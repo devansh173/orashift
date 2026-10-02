@@ -24,6 +24,8 @@ from orashift.seed import load as seed_load
 from orashift.seed import verify as seed_verify
 from orashift.units import generate as units_generate
 from orashift.units import store as units_store
+from orashift.verify import run as verify_run
+from orashift.verify.candidates import CandidateSource
 
 app = typer.Typer(
     name="orashift",
@@ -342,9 +344,109 @@ def _print_yield_report() -> None:
 
 
 @app.command()
-def verify() -> None:
-    """Produce translation candidates and verify them by execution."""
-    _not_implemented(3, "verify")
+def verify(
+    source: Annotated[
+        list[str] | None,
+        typer.Option(
+            "--source", "-s", help="Candidate source; repeatable. Default: gold, sqlglot."
+        ),
+    ] = None,
+    limit: Annotated[
+        int | None, typer.Option("--limit", help="Verify only this many units per source.")
+    ] = None,
+    resume: Annotated[
+        bool,
+        typer.Option("--resume/--rerun", help="Skip units already attempted for that source."),
+    ] = True,
+    show_failures: Annotated[
+        bool, typer.Option("--show-failures", help="Break down why candidates failed.")
+    ] = False,
+) -> None:
+    """Produce translation candidates and verify them by execution on both engines."""
+    settings = get_settings()
+    chosen = [CandidateSource(name) for name in (source or ["gold", "sqlglot"])]
+
+    summaries = []
+    for candidate in chosen:
+        if candidate is CandidateSource.ORA2PG:
+            try:
+                summary = verify_run.run_ora2pg(settings, resume=resume)
+            except Exception as exc:
+                err_console.print(f"[yellow]ora2pg baseline skipped:[/] {exc}")
+                continue
+        else:
+            summary = verify_run.run_source(settings, candidate, limit=limit, resume=resume)
+        summaries.append(summary)
+        console.print(
+            f"{candidate}: {summary.verified}/{summary.attempted} verified "
+            f"({summary.execution_accuracy:.0%}), "
+            f"{summary.runs_without_error:.0%} ran without error"
+        )
+
+    _print_accuracy_table()
+
+    if show_failures:
+        for candidate in chosen:
+            rows = verify_run.failure_reasons(candidate)
+            if not rows:
+                continue
+            table = Table(title=f"Why {candidate} failed", title_justify="left")
+            table.add_column("Count", justify="right")
+            table.add_column("Reason")
+            table.add_column("Example category")
+            table.add_column("Example detail", max_width=60)
+            for reason, count, category, detail in rows:
+                table.add_row(str(count), reason or "-", category or "-", (detail or "-")[:200])
+            console.print(table)
+
+
+def _print_accuracy_table() -> None:
+    """Execution accuracy per source and category, side by side."""
+    with units_store.connect() as conn:
+        rows = units_store.attempt_report(conn)
+        totals = units_store.source_totals(conn)
+
+    sources = sorted({str(r["source"]) for r in rows})
+    by_key: dict[tuple[str, str, str], dict[str, object]] = {
+        (str(r["source"]), str(r["unit_type"]), str(r["category"])): r for r in rows
+    }
+    categories = sorted({(str(r["unit_type"]), str(r["category"])) for r in rows})
+
+    table = Table(title="Execution accuracy by category", title_justify="left")
+    table.add_column("Type", style="bold")
+    table.add_column("Category")
+    for name in sources:
+        table.add_column(name, justify="right")
+
+    last_type = None
+    for unit_type, category in categories:
+        cells = []
+        for name in sources:
+            row = by_key.get((name, unit_type, category))
+            if row is None:
+                cells.append("-")
+                continue
+            attempted = int(row["attempted"])
+            verified = int(row["verified"] or 0)
+            rate = verified / attempted if attempted else 0.0
+            colour = "green" if rate >= 0.9 else "yellow" if rate >= 0.5 else "red"
+            cells.append(f"[{colour}]{verified}/{attempted}[/]")
+        table.add_row(unit_type if unit_type != last_type else "", category, *cells)
+        last_type = unit_type
+
+    table.add_section()
+    totals_by_source = {str(t["source"]): t for t in totals}
+    overall = []
+    for name in sources:
+        t = totals_by_source.get(name)
+        if t is None:
+            overall.append("-")
+            continue
+        attempted, verified = int(t["attempted"]), int(t["verified"] or 0)
+        rate = verified / attempted if attempted else 0.0
+        overall.append(f"[bold]{verified}/{attempted} ({rate:.0%})[/]")
+    table.add_row("", "[bold]all[/]", *overall)
+    console.print(table)
 
 
 @app.command("build-dataset")

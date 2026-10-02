@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify ora2pg-pull up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -37,6 +37,12 @@ reseed:  ## Regenerate the seed CSVs from the fixed seed, then load and verify
 
 generate:  ## Build the Oracle source-unit pool and verify it against Oracle
 	$(UV) run orashift generate --show-failures
+
+verify:  ## Translate every unit and verify it by execution on both engines
+	$(UV) run orashift verify --show-failures
+
+ora2pg-pull:  ## Fetch the pinned ora2pg image used for the DDL baseline
+	docker pull --platform linux/amd64 georgmoser/ora2pg:latest
 
 up:  ## Start the bundled databases
 	docker compose up -d

@@ -62,6 +62,9 @@ class Anchors:
 
     # For PIVOT, which needs the list of values spelled out.
     pivot_in: str | None = None
+    pivot_agg: str | None = None
+    """PostgreSQL has no PIVOT, so the same result is produced by conditional
+    aggregation. Spelled out here because the column list is schema-specific."""
 
     seq: str | None = None
 
@@ -100,6 +103,12 @@ RETAIL = Anchors(
     hier_parent="parent_category_id",
     hier_label="category_name",
     pivot_in="'NEW' AS c_new, 'PAID' AS c_paid, 'SHIPPED' AS c_shipped, 'CANCELLED' AS c_cancelled",
+    pivot_agg=(
+        "COUNT(CASE WHEN status = 'NEW' THEN order_id END) AS c_new, "
+        "COUNT(CASE WHEN status = 'PAID' THEN order_id END) AS c_paid, "
+        "COUNT(CASE WHEN status = 'SHIPPED' THEN order_id END) AS c_shipped, "
+        "COUNT(CASE WHEN status = 'CANCELLED' THEN order_id END) AS c_cancelled"
+    ),
     seq="retail_order_seq",
 )
 
@@ -126,6 +135,12 @@ HR = Anchors(
     hier_parent="manager_id",
     hier_label="last_name",
     pivot_in="'IT_PROG' AS c_prog, 'SA_REP' AS c_rep, 'FI_ACCT' AS c_acct, 'AD_VP' AS c_vp",
+    pivot_agg=(
+        "COUNT(CASE WHEN job_id = 'IT_PROG' THEN employee_id END) AS c_prog, "
+        "COUNT(CASE WHEN job_id = 'SA_REP' THEN employee_id END) AS c_rep, "
+        "COUNT(CASE WHEN job_id = 'FI_ACCT' THEN employee_id END) AS c_acct, "
+        "COUNT(CASE WHEN job_id = 'AD_VP' THEN employee_id END) AS c_vp"
+    ),
     seq="hr_employee_seq",
 )
 
@@ -176,6 +191,12 @@ LOGISTICS = Anchors(
     pivot_in=(
         "'BOOKED' AS c_booked, 'IN_TRANSIT' AS c_transit, "
         "'DELIVERED' AS c_delivered, 'EXCEPTION' AS c_exception"
+    ),
+    pivot_agg=(
+        "COUNT(CASE WHEN status = 'BOOKED' THEN shipment_id END) AS c_booked, "
+        "COUNT(CASE WHEN status = 'IN_TRANSIT' THEN shipment_id END) AS c_transit, "
+        "COUNT(CASE WHEN status = 'DELIVERED' THEN shipment_id END) AS c_delivered, "
+        "COUNT(CASE WHEN status = 'EXCEPTION' THEN shipment_id END) AS c_exception"
     ),
     seq="logistics_shipment_seq",
 )
