@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify ora2pg-pull up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset ora2pg-pull up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -40,6 +40,9 @@ generate:  ## Build the Oracle source-unit pool and verify it against Oracle
 
 verify:  ## Translate every unit and verify it by execution on both engines
 	$(UV) run orashift verify --show-failures
+
+dataset:  ## Build the train/val/test JSONL splits and the dataset card
+	$(UV) run orashift build-dataset
 
 ora2pg-pull:  ## Fetch the pinned ora2pg image used for the DDL baseline
 	docker pull --platform linux/amd64 georgmoser/ora2pg:latest

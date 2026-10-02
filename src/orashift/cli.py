@@ -17,6 +17,8 @@ from rich.table import Table
 
 from orashift import __version__, catalog, db
 from orashift.config import Settings, get_settings
+from orashift.dataset import build as dataset_build
+from orashift.dataset import card as dataset_card
 from orashift.db.base import ServerInfo
 from orashift.logging import configure_logging, get_logger
 from orashift.seed import generate as seed_generate
@@ -450,9 +452,48 @@ def _print_accuracy_table() -> None:
 
 
 @app.command("build-dataset")
-def build_dataset() -> None:
+def build_dataset(
+    out_dir: Annotated[
+        Path, typer.Option("--out", help="Where to write the JSONL splits.")
+    ] = dataset_build.DEFAULT_OUT_DIR,
+    max_tokens: Annotated[
+        int, typer.Option("--max-tokens", help="Estimated token budget per example.")
+    ] = dataset_build.MAX_SEQ_LENGTH,
+) -> None:
     """Turn verified pairs into train/val/test chat JSONL splits."""
-    _not_implemented(4, "build-dataset")
+    report = dataset_build.build(out_dir, max_tokens=max_tokens)
+
+    table = Table(title="Dataset splits", title_justify="left")
+    table.add_column("Split", style="bold")
+    table.add_column("Examples", justify="right")
+    table.add_column("Share", justify="right")
+    for name, count in report.counts.items():
+        share = count / report.total if report.total else 0.0
+        table.add_row(name, str(count), f"{share:.0%}")
+    table.add_section()
+    table.add_row("[bold]total[/]", f"[bold]{report.total}[/]", "")
+    console.print(table)
+
+    console.print(
+        f"Longest example ~{report.longest} estimated tokens "
+        f"(budget {max_tokens}); {report.excluded} excluded as too long."
+    )
+    console.print(
+        "[yellow]Token counts are estimates.[/] The real tokenizer cannot run here "
+        "(this network blocks huggingface.co); the training notebook re-measures."
+    )
+
+    if report.thin_categories:
+        thin = Table(title="Categories too thin to train on", title_justify="left")
+        thin.add_column("Category")
+        thin.add_column("Training examples", justify="right")
+        for category, count in report.thin_categories:
+            thin.add_row(category, str(count))
+        console.print(thin)
+
+    card_path = dataset_card.write(report, out_dir / "README.md")
+    console.print(f"Wrote splits and dataset card to {out_dir}/")
+    console.print(f"  card: {card_path}")
 
 
 @app.command()

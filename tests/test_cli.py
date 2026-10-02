@@ -11,11 +11,18 @@ from orashift.cli import _not_implemented, app
 
 runner = CliRunner()
 
-# Commands still stubbed out. `seed` (phase 1), `generate` (phase 2) and
-# `verify` (phase 3) are covered by the db-marked tests, so they must not be
-# invoked here: that would hit real databases.
-LATER_PHASE_COMMANDS = ["build-dataset", "eval"]
-IMPLEMENTED_COMMANDS = ["check-connections", "seed", "generate", "verify", "version"]
+# Commands still stubbed out. Everything else is covered elsewhere and must not
+# be invoked here: seed, generate and verify would hit real databases, and
+# build-dataset is exercised through tests/test_dataset.py.
+LATER_PHASE_COMMANDS = ["eval"]
+IMPLEMENTED_COMMANDS = [
+    "check-connections",
+    "seed",
+    "generate",
+    "verify",
+    "build-dataset",
+    "version",
+]
 
 
 def test_help_lists_the_whole_pipeline():

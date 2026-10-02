@@ -790,3 +790,126 @@ is a table, a view or a sequence — so those fail routinely and harmlessly. Und
 transaction, one of them poisoned the connection for every unit that followed, which showed
 up as all 33 DDL units failing at once. Savepoints would also work but add a statement pair
 per drop for no benefit, since scratch-object creation does not need to be atomic.
+
+---
+
+## D35 — The pool was grown by widening parameters, not by writing more templates
+
+**Decision.** Before building the dataset, parameter value lists on 19 existing templates
+were widened. The pool went from 487 to 783 verified pairs, and the trainable bucket from
+291 to 486.
+
+**Alternatives.**
+- *Write more templates.* More genuine variety.
+- *Build the dataset on 291 trainable pairs.*
+- *Turn on the LLM generator from D21.*
+
+**Why.** 291 trainable pairs leaves roughly 240 for training after carving validation and
+an in-schema test set. Published QLoRA results on narrow tasks generally use 500–1000, so
+240 risks a weak result that cannot be attributed: method or data volume? Widening
+parameters is the cheapest fix available, because translations are keyed by *template*, so
+a template rendering ten values instead of three needs no new translation at all. More
+templates would each need a hand-written PostgreSQL counterpart.
+
+**Cost accepted.** Parameter variants are shallower variety than new templates: ten
+`FETCH FIRST` sizes teach less than ten different constructs. The growth is also uneven —
+queries multiplied far more than DDL or DML, so those are now proportionally thinner
+(720 query, 33 DDL, 30 DML). Both facts are stated in the dataset card rather than left
+for a reader to work out.
+
+---
+
+## D36 — The system prompt carries only the tables the statement references
+
+**Decision.** `build_system_prompt` parses the statement, finds which of that schema's
+tables it uses, and includes only those `CREATE TABLE` definitions.
+
+**Alternatives.**
+- *Include the whole schema every time.* Simplest, and definitely sufficient.
+- *Include no DDL at all.*
+- *Include just column names.*
+
+**Why.** Including the whole schema would spend most of a 2048-token budget on tables the
+statement never mentions. Including nothing would ask the model to translate column
+references it cannot see, which is a different and harder task than the one being measured,
+and not the one a real user faces — anyone translating a query has the schema in front of
+them.
+
+Table extraction uses the sqlglot AST where it parses and falls back to a word search
+where it does not. The fallback deliberately over-includes: a missing table leaves the
+model guessing at column names, whereas an extra table only costs tokens. `CONNECT BY`
+statements go down the fallback path, and there is a test for exactly that.
+
+---
+
+## D37 — Token lengths are estimated locally and measured on Kaggle
+
+**Decision.** The builder estimates tokens at 3.0 characters per token and labels every
+such number an estimate. The training notebook re-measures with the real tokenizer on
+Kaggle and reports the true exclusions.
+
+**Alternatives.**
+- *Install `transformers` and download the Qwen tokenizer.* The correct answer, and the
+  first thing attempted.
+- *Use a different tokenizer as a proxy.*
+- *Skip length filtering entirely.*
+
+**Why.** This machine's network returns 403 for huggingface.co, so the real tokenizer
+cannot be downloaded — the same block that stopped a config fetch earlier in the project.
+A proxy tokenizer would produce a number that looks authoritative and is not, which is
+worse than an estimate that is labelled as one.
+
+3.0 characters per token is deliberately pessimistic: SQL tokenises at roughly 3.5–4, so
+the filter errs towards excluding an example rather than letting an over-long one through.
+On the current data nothing is close — the longest example is about 1 087 estimated tokens
+against a 2 048 budget — so the estimate's imprecision changes no decision today. It would
+matter if the schemas grew, which is why the notebook re-measures rather than trusting it.
+
+**How this is kept honest.** The CLI prints a warning on every build, and the dataset card
+says plainly that the figures are estimates and why.
+
+---
+
+## D38 — A category with fewer than ten trainable examples is kept whole for training
+
+**Decision.** Splitting is stratified by category, except that any category with fewer than
+ten trainable examples goes entirely to training.
+
+**Alternatives.**
+- *Split every category proportionally.*
+- *Drop thin categories from the dataset.*
+
+**Why.** Splitting two `ddl_identity` examples across train, validation and test leaves a
+test set of one, whose score can only ever read 0% or 100%. That is not a measurement, and
+reporting it beside properly-sized categories would invite exactly the wrong conclusion.
+Keeping them in training at least lets the model learn the construct, and the categories
+concerned are still measured through the three other test splits, which are assigned by
+schema and template rather than by sampling.
+
+Dropping them would be worse: `MERGE` and the DDL constructs are among the most
+interesting translations in the project.
+
+**How this is kept honest.** `orashift build-dataset` prints every category with fewer than
+ten training examples, and the dataset card lists them with a warning that per-category
+results for them are noise. Ten categories currently qualify, almost all DDL and DML.
+
+---
+
+## D39 — The built dataset is committed to the repository
+
+**Decision.** `data/dataset/*.jsonl` and the generated card are committed, unlike the unit
+database, which stays ignored.
+
+**Alternatives.**
+- *Generate it on demand and ignore it,* as `data/orashift.sqlite` is.
+- *Only publish it to the Hub.*
+
+**Why.** The unit database is regenerable by anyone with both engines running; the dataset
+is the actual deliverable, and it is the one artefact a reader can inspect without
+installing Oracle. Committing it makes the training set reviewable in a diff — a reviewer
+can see the exact prompt format and spot a leak — and lets phase 5 run from a clone alone.
+At about 1.6 MB across six files that is a cheap trade.
+
+The Hub copy is additional rather than the primary location, partly because the push could
+not be tested from this machine (same 403 as D37) and partly because a repository should
+not depend on an external service to be readable.

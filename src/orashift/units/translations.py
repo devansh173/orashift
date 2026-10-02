@@ -375,7 +375,17 @@ TRANSLATIONS: dict[str, Translation] = {
     ),
     "trunc_date_unit": _x(
         "SELECT {fact_pk}, DATE_TRUNC('{unit}', {fact_date}) AS d FROM {fact} ORDER BY {fact_pk}",
-        param_translate={"unit": {"MM": "month", "YYYY": "year", "IW": "week", "HH": "hour"}},
+        param_translate={
+            "unit": {
+                "MM": "month",
+                "YYYY": "year",
+                "IW": "week",
+                "HH": "hour",
+                "DD": "day",
+                "Q": "quarter",
+                "MI": "minute",
+            }
+        },
         note="Oracle's TRUNC format codes map onto DATE_TRUNC's unit names.",
     ),
     "trunc_date_group": _x(

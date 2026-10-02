@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Iterator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from orashift.units.anchors import ANCHORS, Anchors
 from orashift.units.types import Category, UnitType
@@ -1108,6 +1108,78 @@ def render_all() -> Iterator[tuple[Template, Anchors, str, dict[str, str]]]:
         for anchors in ANCHORS.values():
             for sql, combo in render(template, anchors):
                 yield template, anchors, sql, combo
+
+
+# --------------------------------------------------------------------------- #
+# Parameter expansion
+#
+# Widening the value lists on templates that already take parameters multiplies
+# the pool without needing a single new translation, because translations are
+# keyed by template rather than by rendered statement. That is the cheapest way
+# to reach a defensible training-set size: the alternative, writing more
+# templates, costs a hand-written PostgreSQL counterpart each time.
+#
+# Kept separate from the template definitions so the two concerns stay legible:
+# above is what each construct looks like, here is how widely it is sampled.
+# --------------------------------------------------------------------------- #
+
+_PARAM_EXPANSIONS: dict[str, dict[str, tuple[str, ...]]] = {
+    "rownum_inline": {"n": ("1", "2", "3", "5", "10", "15", "25", "50")},
+    "rownum_ordered_subquery": {"n": ("1", "5", "10", "20", "40")},
+    "rownum_as_column": {"n": ("3", "8", "15", "30")},
+    "rownum_with_filter": {"n": ("2", "6", "12", "20")},
+    "fetch_first_basic": {"n": ("1", "5", "10", "15", "30")},
+    "fetch_first_desc": {"n": ("1", "3", "7", "12", "25")},
+    "fetch_offset": {"k": ("0", "5", "10", "20", "50"), "n": ("1", "3", "5")},
+    "fetch_with_ties": {"n": ("2", "4", "6", "8")},
+    "nvl_dim_numeric": {"d": ("0", "-1", "1", "999")},
+    "sysdate_window": {"m": ("1", "3", "6", "12", "24", "36")},
+    "to_char_date_iso": {
+        "mask": (
+            "YYYY-MM-DD",
+            "DD/MM/YYYY",
+            "YYYY-MM-DD HH24:MI:SS",
+            "YYYYMM",
+            "YYYY",
+            "MM-DD",
+            "DD-MM-YYYY HH24:MI",
+            "YYYY/MM/DD",
+            "HH24:MI:SS",
+            "YYYYMMDD",
+        )
+    },
+    "to_char_date_part": {"part": ("YYYY", "MM", "DD", "Q", "IW", "WW", "HH24")},
+    "to_date_literal": {
+        "d": ("2024-03-07", "2026-01-31", "1999-12-31", "2020-02-29", "2025-07-04", "2000-01-01")
+    },
+    "add_months_basic": {"m": ("1", "-1", "2", "3", "-3", "6", "-6", "12", "-12", "24")},
+    "add_months_filter": {"m": ("1", "3", "6", "12", "24")},
+    # New TRUNC units need a matching entry in the translation's param_translate.
+    "trunc_date_unit": {"unit": ("MM", "YYYY", "IW", "HH", "DD", "Q", "MI")},
+    "dual_literal": {
+        "v": ("1", "0", "-7", "'hello'", "'world'", "42 * 2", "2 + 3", "100 - 1", "'orashift'")
+    },
+    "aggregate_having": {"n": ("0", "1", "2", "3", "5", "10")},
+    "string_length_funcs": {"n": ("3", "4", "5", "8", "10", "15")},
+}
+
+
+def _expanded(templates: list[Template]) -> list[Template]:
+    """Apply the wider parameter lists, leaving everything else untouched."""
+    out: list[Template] = []
+    for template in templates:
+        extra = _PARAM_EXPANSIONS.get(template.id)
+        if extra is None:
+            out.append(template)
+            continue
+        unknown = set(extra) - set(template.params)
+        if unknown:
+            raise ValueError(f"{template.id}: expansion names unknown parameters {unknown}")
+        out.append(replace(template, params={**template.params, **extra}))
+    return out
+
+
+ALL_TEMPLATES = _expanded(ALL_TEMPLATES)
 
 
 HELD_OUT_TEMPLATES: frozenset[str] = frozenset(
