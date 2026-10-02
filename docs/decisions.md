@@ -408,3 +408,157 @@ it here would mean the schema loader fails whenever `sqlglot` cannot parse an Or
 which is the opposite of what a bootstrap step should do. Shelling out to the native
 clients would add two more tools to the dependency list for a fresh clone. The limitation
 is documented in the function's own docstring so the next reader is not surprised.
+
+---
+
+## D21 — Templates first, LLM generation optional and off by default
+
+**Decision.** The unit pool is built from ~123 parameterised templates rendered against
+every schema whose anchors they need. An LLM generator exists behind
+`UNIT_LLM_ENABLED`, targeting any OpenAI-compatible endpoint, and is off.
+
+**Alternatives.**
+- *LLM-only generation.* Far more variety per unit of effort.
+- *Hand-write every statement.* Total control, no abstraction to understand.
+- *Mine real-world Oracle SQL from public corpora.* The most realistic input.
+
+**Why.** Templates give a *coverage guarantee*: there is a test asserting every category
+in the enum has at least one template, so no construct on the project's list can silently
+go unrepresented. An LLM gives variety but no guarantee — it would be entirely possible to
+generate 800 units and have four of them use `PIVOT`. Templates also cost nothing and are
+deterministic, which matters because the pool is regenerated on every run.
+
+Mining real SQL was rejected on licensing: the brief restricts this project to public or
+synthetic data, and Oracle SQL found in the wild usually references proprietary schemas.
+
+The LLM path is written and its pure functions are tested, but the network call is
+unexercised. That is stated here rather than left for a reader to discover.
+
+**Cost accepted.** Template-generated SQL is more uniform in phrasing than human SQL. If
+the model later turns out to be brittle to phrasing, switching the LLM path on is the
+remedy, and the pipeline already supports it.
+
+---
+
+## D22 — Every unit must execute on Oracle before it can enter the pool
+
+**Decision.** Generation produces candidates. Only statements that actually run on the
+pinned Oracle are marked `verified`; everything else is `failed` and excluded.
+
+**Alternatives.**
+- *Trust the templates.* They are hand-written and reviewed.
+- *Validate by parsing with `sqlglot` instead of executing.*
+
+**Why.** A template is a guess until it runs. Parsing proves only that something is
+syntactically plausible, not that the columns exist, the types line up, or the constraints
+permit it. Since the whole project's thesis is that execution is the only meaningful
+measure, applying anything weaker to its own inputs would be incoherent.
+
+**On the 100% yield.** The first full run verified 487 of 487 units. A filter that never
+rejects anything is indistinguishable from a broken filter, so failure was tested directly:
+syntax errors, unknown tables, unknown columns, PostgreSQL-only functions (`nextval`,
+`LIMIT`), invalid datatypes, constraint violations and oversized results are all rejected,
+and there is a live test for each. The 100% is real — the templates were simply correct —
+but it means the filter has not yet been exercised by genuine surprises. It will be in
+phase 3, where model output arrives.
+
+---
+
+## D23 — SQLite for the pool, with the normalised hash as the primary key
+
+**Decision.** Units live in `data/orashift.sqlite`. The primary key is a SHA-256 prefix of
+the sqlglot-normalised statement, so duplicates collapse on `INSERT OR IGNORE`.
+
+**Alternatives.**
+- *JSONL files on disk.* Simpler, diffable, reviewable in a pull request.
+- *A separate dedupe pass after generation.*
+- *An auto-increment key with a unique index on the hash.*
+
+**Why.** The pipeline has to be resumable: phase 3 will run thousands of translations and
+must survive being interrupted. A row-level store with a status column makes "only process
+what is still pending" a one-line query. Making the content hash the primary key means
+dedupe is not a pass that can be forgotten — it is a property of the schema. Re-running
+generation is therefore free and idempotent, and a unit that has already been verified
+keeps its result rather than being reset.
+
+55 of 542 rendered statements collapsed this way on the first run, almost all of them DDL
+templates that do not reference schema anchors and so render identically for all four
+schemas.
+
+**Cost accepted.** A binary file is not reviewable in a diff, so it is git-ignored and
+regenerated rather than committed. That is acceptable because generation is deterministic.
+
+---
+
+## D24 — DML is verified inside a transaction that is rolled back
+
+**Decision.** `INSERT`, `UPDATE`, `DELETE` and `MERGE` units are executed for real against
+the seeded tables, inside a transaction. The affected tables are digested before and after,
+the row count is recorded, and the transaction is rolled back. A second digest confirms the
+rollback restored the table.
+
+**Alternatives.**
+- *Exclude DML.* Simplest, and avoids any risk to the seed data.
+- *Run DML against throwaway copies of the tables.* Safe, but then the statements do not
+  reference the real schema and are less representative.
+- *Validate DML by parsing only.*
+
+**Why.** `MERGE` is one of the most interesting translation targets in the whole project —
+PostgreSQL only gained a full `MERGE` in version 15, and before that it needed
+`INSERT … ON CONFLICT`, which has different semantics. Dropping DML would have removed the
+single most impressive thing this pipeline can demonstrate.
+
+The post-rollback digest is what makes this safe rather than merely hopeful: if a rollback
+ever failed to restore a table, the unit is marked failed and the discrepancy is reported
+rather than silently corrupting the dataset. After a full run of 30 DML units the seed
+comparison still reports all 20 tables identical across both engines.
+
+---
+
+## D25 — Non-deterministic constructs are used only where the result is stable
+
+**Decision.** `SYSDATE` appears only in forms whose *result* does not vary between two runs
+seconds apart — `WHERE date_col < SYSDATE`, `TRUNC(SYSDATE)`, `BETWEEN ADD_MONTHS(SYSDATE,
+-6) AND SYSDATE`. Sequence units are kept but tagged `value_comparable=false`.
+
+**Alternatives.**
+- *Exclude SYSDATE and sequences entirely.* Clean, but they are common in real Oracle code.
+- *Include them freely and accept comparison noise.*
+- *Freeze the clock.* Not possible across two independent database servers.
+
+**Why.** `SELECT SYSDATE FROM dual` can never compare equal across two engines queried
+milliseconds apart, so including it would manufacture false failures and make the headline
+accuracy number meaningless. But `SELECT COUNT(*) ... WHERE order_date < SYSDATE` returns
+the same count on both sides, while still requiring the model to translate `SYSDATE`
+correctly. The construct is tested; the non-determinism is not.
+
+Sequences are a harder case: two engines' sequences advance independently, so even a
+perfect translation of `seq.NEXTVAL` returns a different number. Those units are therefore
+flagged, and phase 3 will score them on "runs without error and returns the same shape"
+rather than on value equality. Scoring them any other way would be dishonest.
+
+**Known residual risk.** `TRUNC(SYSDATE)` differs across the two engines if a run straddles
+midnight. Accepted, and recorded here rather than hidden.
+
+---
+
+## D26 — sqlglot for normalisation, with a text fallback
+
+**Decision.** Statements are normalised by parsing with `sqlglot` in Oracle dialect and
+regenerating canonically. When sqlglot cannot parse a statement, the fallback is the raw
+text with whitespace collapsed and lower-cased.
+
+**Alternatives.**
+- *Reject anything sqlglot cannot parse.*
+- *Normalise by regex only.*
+- *Use Oracle's own parser via `EXPLAIN PLAN`.*
+
+**Why.** Regex normalisation would miss that `WHERE a=1` and `WHERE a = 1` are the same
+statement. But rejecting what sqlglot cannot parse would be exactly backwards: sqlglot is
+also one of the *baselines* this project measures itself against, and the statements it
+cannot handle are precisely the hard cases a fine-tuned model might win on. Dropping them
+would quietly rig the comparison in sqlglot's favour.
+
+The parse outcome is recorded per unit as `sqlglot_parsed`, so phase 7 can report how the
+fine-tuned model performs specifically on the statements the rule-based baseline could not
+even parse.

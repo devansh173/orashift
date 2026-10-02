@@ -22,6 +22,8 @@ from orashift.logging import configure_logging, get_logger
 from orashift.seed import generate as seed_generate
 from orashift.seed import load as seed_load
 from orashift.seed import verify as seed_verify
+from orashift.units import generate as units_generate
+from orashift.units import store as units_store
 
 app = typer.Typer(
     name="orashift",
@@ -242,9 +244,101 @@ def seed(
 
 
 @app.command()
-def generate() -> None:
-    """Generate the pool of Oracle source units (queries and DDL)."""
-    _not_implemented(2, "generate")
+def generate(
+    verify_on_oracle: Annotated[
+        bool,
+        typer.Option(
+            "--verify/--no-verify",
+            help="Run every new unit against Oracle and drop the ones that fail.",
+        ),
+    ] = True,
+    limit: Annotated[
+        int | None,
+        typer.Option(
+            "--limit", help="Only verify this many pending units; useful for a smoke run."
+        ),
+    ] = None,
+    show_failures: Annotated[
+        bool,
+        typer.Option("--show-failures", help="List the most common failure reasons."),
+    ] = False,
+) -> None:
+    """Generate the pool of Oracle source units (queries, DDL and DML)."""
+    settings = get_settings()
+
+    summary = units_generate.generate()
+    console.print(
+        f"Rendered {summary.rendered} statements, "
+        f"{summary.inserted} new, "
+        f"{summary.collapsed} collapsed as duplicates."
+    )
+
+    if verify_on_oracle:
+        result = units_generate.verify_on_oracle(settings, limit=limit)
+        console.print(
+            f"Ran {result.checked} against Oracle: "
+            f"[green]{result.verified} verified[/], [red]{result.failed} failed[/]."
+        )
+
+    _print_yield_report()
+
+    if show_failures:
+        failures = units_generate.failure_breakdown()
+        if failures:
+            table = Table(title="Most common failures", title_justify="left")
+            table.add_column("Count", justify="right")
+            table.add_column("Reason")
+            table.add_column("Example template")
+            for reason, count, template_id in failures:
+                table.add_row(str(count), reason or "-", template_id or "-")
+            console.print(table)
+
+
+def _print_yield_report() -> None:
+    """Per category: generated, kept, dropped. A weak category cannot hide here."""
+    with units_store.connect() as conn:
+        rows = units_store.yield_report(conn)
+
+    table = Table(title="Unit pool yield", title_justify="left")
+    table.add_column("Type", style="bold")
+    table.add_column("Category")
+    table.add_column("Total", justify="right")
+    table.add_column("Verified", justify="right")
+    table.add_column("Failed", justify="right")
+    table.add_column("Yield", justify="right")
+
+    totals = {"total": 0, "verified": 0, "failed": 0}
+    last_type = None
+    for row in rows:
+        total = int(row["total"])
+        verified = int(row["verified"] or 0)
+        failed = int(row["failed"] or 0)
+        totals["total"] += total
+        totals["verified"] += verified
+        totals["failed"] += failed
+        rate = verified / total if total else 0.0
+        colour = "green" if rate >= 0.8 else "yellow" if rate >= 0.4 else "red"
+        table.add_row(
+            str(row["unit_type"]) if row["unit_type"] != last_type else "",
+            str(row["category"]),
+            str(total),
+            str(verified),
+            str(failed),
+            f"[{colour}]{rate:.0%}[/]",
+        )
+        last_type = row["unit_type"]
+
+    overall = totals["verified"] / totals["total"] if totals["total"] else 0.0
+    table.add_section()
+    table.add_row(
+        "",
+        "[bold]all[/]",
+        str(totals["total"]),
+        str(totals["verified"]),
+        str(totals["failed"]),
+        f"[bold]{overall:.0%}[/]",
+    )
+    console.print(table)
 
 
 @app.command()

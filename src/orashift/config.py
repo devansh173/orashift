@@ -40,6 +40,15 @@ class Settings(BaseSettings):
     pg_user: str = "orashift"
     pg_password: SecretStr = SecretStr("")
 
+    # --- Optional LLM unit generation (off by default) --------------------
+    unit_llm_enabled: bool = False
+    """Templates alone cover every construct. The LLM path exists to add
+    variety and is switched on deliberately, because it costs money."""
+    unit_llm_base_url: str = "https://api.openai.com/v1"
+    unit_llm_api_key: SecretStr = SecretStr("")
+    unit_llm_model: str = "gpt-4o-mini"
+    unit_llm_per_category: int = 5
+
     # --- Behaviour --------------------------------------------------------
     connect_timeout_seconds: int = Field(default=10, ge=1, le=300)
     log_level: str = "INFO"

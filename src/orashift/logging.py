@@ -19,6 +19,11 @@ from orashift.config import LogFormat
 _configured = False
 
 
+def _stderr_logger_factory(*_args: Any) -> structlog.PrintLogger:
+    """A fresh logger bound to whatever sys.stderr is right now."""
+    return structlog.PrintLogger(sys.stderr)
+
+
 def configure_logging(level: str = "INFO", fmt: LogFormat = "console") -> None:
     """Configure structlog. Safe to call more than once; later calls reconfigure."""
     global _configured
@@ -41,8 +46,12 @@ def configure_logging(level: str = "INFO", fmt: LogFormat = "console") -> None:
     structlog.configure(
         processors=[*shared, renderer],
         wrapper_class=structlog.make_filtering_bound_logger(numeric_level),
-        logger_factory=structlog.PrintLoggerFactory(sys.stderr),
-        cache_logger_on_first_use=True,
+        # Resolve sys.stderr at write time, not at configure time. Binding the
+        # stream here would leave cached loggers holding a stale handle if
+        # anything swaps stdio out and back, which test runners and CLI
+        # harnesses both do.
+        logger_factory=_stderr_logger_factory,
+        cache_logger_on_first_use=False,
     )
     _configured = True
 

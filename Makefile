@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections seed reseed up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -34,6 +34,9 @@ seed:  ## Load the schemas and seed data into both databases, then verify
 
 reseed:  ## Regenerate the seed CSVs from the fixed seed, then load and verify
 	$(UV) run orashift seed --regenerate
+
+generate:  ## Build the Oracle source-unit pool and verify it against Oracle
+	$(UV) run orashift generate --show-failures
 
 up:  ## Start the bundled databases
 	docker compose up -d
