@@ -1,0 +1,90 @@
+{
+  "base_model": "unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit",
+  "max_seq_length": 1024,
+  "seed": 20260101,
+  "precision": "fp16",
+  "gpu": "Tesla T4",
+  "lora": {
+    "r": 16,
+    "alpha": 16,
+    "dropout": 0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "trainable_parameters": 29933568,
+  "total_parameters": 1728606208,
+  "trainable_fraction": 0.017317,
+  "hyperparameters": {
+    "per_device_train_batch_size": 2,
+    "gradient_accumulation_steps": 4,
+    "effective_batch_size": 8,
+    "num_train_epochs": 3,
+    "learning_rate": 0.0002,
+    "lr_scheduler_type": "linear",
+    "warmup_ratio": 0.05,
+    "optim": "adamw_8bit",
+    "weight_decay": 0.01
+  },
+  "split_sizes": {
+    "train": 418,
+    "val": 35,
+    "test_in_schema": 33,
+    "test_unseen_schema": 160,
+    "test_unseen_template": 102,
+    "test_unseen_both": 35
+  },
+  "token_stats": {
+    "train": {
+      "count": 418,
+      "max": 616,
+      "mean": 405.2,
+      "over_budget": 0
+    },
+    "val": {
+      "count": 35,
+      "max": 552,
+      "mean": 399.5,
+      "over_budget": 0
+    },
+    "test_in_schema": {
+      "count": 33,
+      "max": 675,
+      "mean": 396.0,
+      "over_budget": 0
+    },
+    "test_unseen_schema": {
+      "count": 160,
+      "max": 780,
+      "mean": 487.6,
+      "over_budget": 0
+    },
+    "test_unseen_template": {
+      "count": 102,
+      "max": 699,
+      "mean": 438.9,
+      "over_budget": 0
+    },
+    "test_unseen_both": {
+      "count": 35,
+      "max": 804,
+      "mean": 531.5,
+      "over_budget": 0
+    }
+  },
+  "final_train_loss": 0.0321,
+  "eval_loss_per_epoch": [
+    0.0132,
+    0.0034,
+    0.0007
+  ],
+  "final_eval_loss": 0.0007,
+  "train_minutes": 13.1,
+  "adapter_mb": 125.2
+}

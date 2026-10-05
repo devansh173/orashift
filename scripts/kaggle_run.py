@@ -191,6 +191,13 @@ def main() -> int:
             p.add_argument("--public", action="store_true", help="Publish the notebook")
             p.add_argument("--poll-seconds", type=int, default=60)
             p.add_argument("--timeout-minutes", type=int, default=120)
+            p.add_argument(
+                "--kernel-timeout-minutes",
+                type=int,
+                default=60,
+                help="Hard cap Kaggle applies to the run itself. A hung install "
+                "once burned 3.6 hours of GPU quota in silence; this stops that.",
+            )
 
     args = parser.parse_args()
 
@@ -212,8 +219,14 @@ def main() -> int:
 
     staging = stage(kernel, username, private=not args.public)
     try:
-        print(f"pushing {kernel['notebook']} to {ref} (gpu=on, internet=on)")
-        print(run_kaggle(["kernels", "push", "-p", str(staging)]).stdout.strip())
+        seconds = args.kernel_timeout_minutes * 60
+        print(
+            f"pushing {kernel['notebook']} to {ref} "
+            f"(gpu=on, internet=on, hard cap {args.kernel_timeout_minutes}m)"
+        )
+        print(
+            run_kaggle(["kernels", "push", "-p", str(staging), "-t", str(seconds)]).stdout.strip()
+        )
     finally:
         shutil.rmtree(staging, ignore_errors=True)
 
