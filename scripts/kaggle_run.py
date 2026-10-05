@@ -33,16 +33,24 @@ RESULTS = REPO_ROOT / "results" / "kaggle"
 
 DEFAULT_CA_BUNDLE = Path.home() / ".config" / "orashift" / "ca-bundle.pem"
 
+ADAPTER_DATASET_SLUG = "orashift-qlora-adapter"
+"""The trained adapter, uploaded as a Kaggle Dataset so the prediction notebook
+can mount it. It is 125 MB, so it is not committed to git."""
+
 KERNELS = {
     "train": {
         "slug": "orashift-qlora-train",
         "title": "OraShift QLoRA train",
         "notebook": "train_qlora.ipynb",
+        "datasets": [],
     },
     "predict": {
-        "slug": "orashift-predict",
+        # The slug must match what Kaggle derives from the title, or the push
+        # lands at a different id than status and fetch look for.
+        "slug": "orashift-predictions",
         "title": "OraShift predictions",
         "notebook": "predict.ipynb",
+        "datasets": [ADAPTER_DATASET_SLUG],
     },
 }
 
@@ -138,12 +146,63 @@ def stage(kernel: dict, username: str, private: bool) -> Path:
         "is_private": private,
         "enable_gpu": True,
         "enable_internet": True,  # needed to download the model and clone the repo
-        "dataset_sources": [],
+        "dataset_sources": [f"{username}/{d}" for d in kernel.get("datasets", [])],
         "competition_sources": [],
         "kernel_sources": [],
     }
     (staging / "kernel-metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
     return staging
+
+
+def find_adapter() -> Path:
+    """Locate the adapter fetched from the training run."""
+    candidates = sorted(RESULTS.rglob("orashift-qlora-adapter"))
+    for path in candidates:
+        if (path / "adapter_model.safetensors").exists():
+            return path
+    raise SystemExit(
+        "no adapter found under results/kaggle/. Run the training notebook first:\n"
+        "  python scripts/kaggle_run.py push --kernel train --wait"
+    )
+
+
+def upload_adapter(username: str) -> str:
+    """Publish the adapter as a Kaggle Dataset, creating or versioning it."""
+    adapter = find_adapter()
+    slug = f"{username}/{ADAPTER_DATASET_SLUG}"
+
+    staging = Path(tempfile.mkdtemp(prefix="orashift-adapter-"))
+    try:
+        for item in adapter.iterdir():
+            if item.is_file():
+                shutil.copy2(item, staging / item.name)
+        (staging / "dataset-metadata.json").write_text(
+            json.dumps(
+                {
+                    "title": "OraShift QLoRA adapter",
+                    "id": slug,
+                    "licenses": [{"name": "CC0-1.0"}],
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        size_mb = sum(f.stat().st_size for f in staging.iterdir()) / 1024**2
+        print(f"uploading {adapter.name} ({size_mb:.0f} MB) as {slug}")
+
+        existing = run_kaggle(
+            ["datasets", "list", "--mine", "-s", ADAPTER_DATASET_SLUG], check=False
+        ).stdout
+        if ADAPTER_DATASET_SLUG in existing:
+            result = run_kaggle(
+                ["datasets", "version", "-p", str(staging), "-m", "retrained adapter"]
+            )
+        else:
+            result = run_kaggle(["datasets", "create", "-p", str(staging)])
+        print(result.stdout.strip())
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
+    return slug
 
 
 def current_status(ref: str) -> str:
@@ -182,6 +241,7 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("ca-bundle", help="Build a CA bundle that includes proxy roots")
+    sub.add_parser("upload-adapter", help="Publish the trained adapter as a Kaggle Dataset")
 
     for name in ("push", "status", "fetch"):
         p = sub.add_parser(name)
@@ -203,6 +263,10 @@ def main() -> int:
 
     if args.command == "ca-bundle":
         build_ca_bundle()
+        return 0
+
+    if args.command == "upload-adapter":
+        print(upload_adapter(whoami()))
         return 0
 
     kernel = KERNELS[args.kernel]
