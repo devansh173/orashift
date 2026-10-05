@@ -21,7 +21,11 @@ htmlcov/
 # Generated artefacts (reproducible from the pipeline, not source)
 data/raw/
 data/interim/
-results/
+
+# Raw Kaggle run dumps are bulky and re-fetchable. The curated artefacts in
+# results/ -- metrics.json, report.md, the charts -- ARE committed, because the
+# README cites them and a claim with no evidence file behind it is worthless.
+results/kaggle/
 *.sqlite
 *.sqlite3
 *.db

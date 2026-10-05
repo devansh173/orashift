@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset check-notebooks ora2pg-pull up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset check-notebooks train-kaggle kaggle-status ora2pg-pull up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -41,6 +41,12 @@ generate:  ## Build the Oracle source-unit pool and verify it against Oracle
 
 verify:  ## Translate every unit and verify it by execution on both engines
 	$(UV) run orashift verify --show-failures
+
+train-kaggle:  ## Push the training notebook to Kaggle, wait, and fetch results
+	$(UV) run python scripts/kaggle_run.py push --wait
+
+kaggle-status:  ## Check on the running Kaggle notebook
+	$(UV) run python scripts/kaggle_run.py status
 
 check-notebooks:  ## Statically validate the Kaggle notebooks
 	$(UV) run python scripts/check_notebooks.py

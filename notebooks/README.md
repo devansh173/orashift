@@ -9,7 +9,53 @@ statically instead — see [Validation](#validation) below.
 | `train_qlora.ipynb` | QLoRA fine-tune of Qwen2.5-Coder-3B-Instruct | ~25–45 min |
 | `predict.ipynb` | Test-set predictions for base and fine-tuned models | arrives in phase 6 |
 
-## Kaggle setup
+## Running it automatically
+
+The whole cycle — push, poll, download results — is one command:
+
+```bash
+make train-kaggle        # push, wait, and pull outputs into results/train/
+```
+
+Or in steps:
+
+```bash
+uv run python scripts/kaggle_run.py push --wait    # push and poll
+uv run python scripts/kaggle_run.py status         # check on it
+uv run python scripts/kaggle_run.py fetch          # download outputs
+```
+
+Authenticate once with `kaggle auth login`. Kaggle has moved to an OAuth flow, so the old
+`kaggle.json` username-and-key file no longer works if your account issues the newer
+`KG…` style token — the login command handles both.
+
+### Behind a TLS-inspecting proxy
+
+Corporate networks running Netskope, Zscaler or similar re-sign every HTTPS connection
+with their own root certificate. macOS trusts it, so `curl` works, but Python's `requests`
+uses certifi's bundle, which does not contain it. The symptom is:
+
+```
+CERTIFICATE_VERIFY_FAILED: self-signed certificate in certificate chain
+```
+
+Build a bundle that contains both sets of roots:
+
+```bash
+uv run python scripts/kaggle_run.py ca-bundle
+```
+
+That writes `~/.config/orashift/ca-bundle.pem`, and `kaggle_run.py` picks it up
+automatically from then on. **Disabling certificate verification is not an acceptable
+workaround** and the script will not do it.
+
+Note that such a proxy may also *block* hosts outright. On the network this was developed
+on, `huggingface.co` returns 403 — which is why the local pipeline cannot run the real
+tokenizer. Kaggle notebooks run on Kaggle's own network and are unaffected.
+
+## Kaggle setup (manual alternative)
+
+If you would rather drive it by hand:
 
 1. Open [kaggle.com/code](https://www.kaggle.com/code) → **New Notebook** → **File → Import
    Notebook** and upload `train_qlora.ipynb`.
