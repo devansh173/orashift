@@ -1,6 +1,6 @@
 """Score model predictions by executing them.
 
-Exactly the same verifier that graded the hand-written references in phase 3 is
+Exactly the same verifier that graded the hand-written references and baselines is
 used here. That is the point: the model is held to the identical standard as
 `sqlglot`, `ora2pg` and the reference translations, with the same comparison
 rules, the same timeouts and the same treatment of statements that cannot be

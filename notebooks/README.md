@@ -7,7 +7,7 @@ statically instead — see [Validation](#validation) below.
 | Notebook | What it does | Runtime |
 | --- | --- | --- |
 | `train_qlora.ipynb` | QLoRA fine-tune of Qwen2.5-Coder-3B-Instruct | ~25–45 min |
-| `predict.ipynb` | Test-set predictions for base and fine-tuned models | arrives in phase 6 |
+| `predict.ipynb` | Test-set predictions for base and fine-tuned models | recorded in `results/predict_run.json` |
 
 ## Running it automatically
 
@@ -86,15 +86,15 @@ If you would rather drive it by hand:
 Kaggle deletes `/kaggle/working` when it reclaims the session. Download from the output
 panel:
 
-- **`orashift-qlora-adapter/`** — the trained adapter, about 60 MB. Phase 6 needs it.
+- **`orashift-qlora-adapter/`** — the trained adapter, about 125 MB. `predict.ipynb` needs it.
 - **`train_run.json`** — commit this to `results/`. Every training number quoted in the
   main README is read from this file, so without it there is nothing to cite.
 
 ## Validation
 
-These notebooks were written on a machine with no GPU and a network that blocks
-huggingface.co, so **the author has not executed them**. That is stated at the top of the
-notebook too, rather than left for you to discover.
+Both notebooks have been run on a Kaggle T4; the measured records are
+`results/train_run.json` and `results/predict_run.json`. They are committed with outputs
+cleared.
 
 What is checked automatically, on every push:
 
@@ -112,5 +112,4 @@ failure that wastes a GPU session most often: a typo that only surfaces when the
 It already earned its place — it caught an escaped docstring that would have failed on
 cell 9, several minutes into a run.
 
-If a cell does fail on Kaggle, the markdown above it names the likely cause. Send me the
-error and I will fix the notebook.
+If a cell fails on Kaggle, the markdown above it names the likely cause.

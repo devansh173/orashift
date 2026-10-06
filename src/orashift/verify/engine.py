@@ -39,7 +39,7 @@ class VerificationOutcome:
     postgres_rows: int | None = None
     ran_on_postgres: bool = False
     """True when the translation executed at all, even if the comparison failed.
-    This is the 'runs without error' rate reported separately in phase 7."""
+    This is the 'runs without error' rate reported separately in the evaluation."""
 
 
 def _short(exc: Exception) -> str:

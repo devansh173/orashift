@@ -319,7 +319,7 @@ LOGISTICS = Schema(
 SCHEMAS: dict[str, Schema] = {s.name: s for s in (RETAIL, HR, LIBRARY, LOGISTICS)}
 
 HELD_OUT_SCHEMA = "logistics"
-"""Fully held out of training in phase 4, to measure generalisation to unseen tables."""
+"""Fully held out of training, to measure generalisation to unseen tables."""
 
 SCHEMA_NAMES = tuple(SCHEMAS)
 

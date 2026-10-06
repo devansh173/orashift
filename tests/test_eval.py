@@ -1,6 +1,6 @@
 """Evaluation: aggregation, the hybrid rule, and report rendering.
 
-The scoring itself is the phase 3 verifier, already tested. What is new here is
+The scoring itself is the baseline verifier, already tested. What is new here is
 the arithmetic that turns per-unit verdicts into the numbers the README quotes,
 so that is what these cover.
 """

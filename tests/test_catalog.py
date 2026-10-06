@@ -53,7 +53,7 @@ def test_find_table_round_trips():
 
 
 def test_self_referencing_hierarchies_exist_for_connect_by():
-    # CONNECT BY coverage in phase 2 needs a parent pointer in both a training
+    # CONNECT BY coverage in the unit pool needs a parent pointer in both a training
     # schema and the held-out schema.
     _s, categories = catalog.find_table("retail_categories")
     assert "parent_category_id" in categories.column_names

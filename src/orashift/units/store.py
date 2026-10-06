@@ -1,7 +1,7 @@
 """SQLite storage for the unit pool.
 
 SQLite because the pipeline has to be resumable: generation, Oracle
-verification and (in phase 3) translation each run over thousands of
+verification and translation each run over thousands of
 statements and must survive being interrupted. A single file is also easy to
 inspect with any SQL client while a run is in progress.
 """
@@ -328,7 +328,7 @@ def source_totals(conn: sqlite3.Connection) -> list[dict[str, object]]:
 
 
 def verified_pairs(conn: sqlite3.Connection, source: str = "gold") -> list[dict[str, object]]:
-    """The execution-verified Oracle/PostgreSQL pairs, for phase 4."""
+    """The execution-verified Oracle/PostgreSQL pairs, for the dataset build."""
     rows = conn.execute(
         """
         SELECT u.unit_key, u.schema_name, u.unit_type, u.category, u.template_id,
@@ -399,7 +399,7 @@ def score_rows(conn: sqlite3.Connection) -> list[dict[str, object]]:
 def baseline_rows_for(conn: sqlite3.Connection, unit_keys: list[str]) -> list[dict[str, object]]:
     """sqlglot and ora2pg results, restricted to the units given.
 
-    Phase 3 measured those baselines over the whole pool. Comparing them to the
+    Verification measured those baselines over the whole pool. Comparing them to the
     models requires restricting them to the same test units, or the comparison
     would be across different populations.
     """

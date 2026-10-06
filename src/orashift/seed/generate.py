@@ -10,7 +10,7 @@ Two rules the generated data obeys, both load-bearing:
 1. **No empty strings, anywhere.** Oracle cannot store one: ``''`` becomes NULL
    on the way in. If the data contained an empty string the two engines could
    never hold identical values, so the ``'' = NULL`` difference is exercised as
-   a *query* construct in later phases instead of as stored data.
+   a *query* construct in the source-unit templates instead of as stored data.
 2. **Self-referencing foreign keys always point backwards.** Both engines check
    a foreign key per row as it is inserted, so a parent must already exist.
    Generated parents therefore always have a lower key than their children.

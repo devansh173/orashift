@@ -120,11 +120,11 @@ more brittle to alternative phrasings than the accuracy figures suggest.
 **The statements are template-generated**, so their phrasing is more uniform than
 human-written SQL.
 
-**Token lengths here are estimates, not measurements.** They assume
+**Token lengths at build time are estimates.** The build assumes
 3.0 characters per token, which over-counts for SQL, so the filter
-errs towards excluding. The real tokenizer could not be run on the machine that
-built this dataset, because its network blocks huggingface.co. The training
-notebook re-measures with the real tokenizer and reports the true exclusions.
+errs towards excluding. The training notebook re-measures every split with the
+real Qwen tokenizer; those figures are in `results/train_run.json` (longest
+example 804 tokens, none excluded).
 
 - Longest example: ~1087 estimated tokens
 - Budget: 2048 tokens

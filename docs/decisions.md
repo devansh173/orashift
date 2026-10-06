@@ -1024,6 +1024,10 @@ mitigation is structural: every stage asserts its assumptions and prints what it
 a failure happens in the first minute rather than the thirtieth, and the markdown above
 each risky cell names the likely cause.
 
+**Update.** The notebook has since been run on a Kaggle T4 (13.1 minutes, recorded in
+`results/train_run.json`). The first cell and the test now point to that record instead of
+saying it is unrun. Outputs are still cleared before committing.
+
 ---
 
 ## D44 — TensorBoard by default, Weights & Biases behind a flag

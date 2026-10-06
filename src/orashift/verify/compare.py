@@ -7,7 +7,7 @@ This is where "correct" is actually defined, so the rules are deliberate:
   so comparing as a sequence would fail correct translations. Everything else is
   compared as a multiset — duplicates still matter, position does not.
 * **Numbers.** Compared as decimal values rounded to a fixed number of places,
-  never as text. Phase 1 measured why: a non-terminating division keeps 38
+  never as text. Measured on both engines: a non-terminating division keeps 38
   significant digits in Oracle's NUMBER and about 16 in PostgreSQL's numeric, so
   ``15.2083333333333333`` and ``15.20833333333333333333333333333333333333`` are
   the same number and must compare equal.

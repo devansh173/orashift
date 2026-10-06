@@ -44,8 +44,8 @@ A translation that carries the predicate across unchanged is silently wrong.
 
 **Consequence for this project.** The seed data contains no empty strings at all. It
 cannot: Oracle would convert them to NULL on insert, so the two engines could never hold
-identical data. This difference is therefore exercised as a *query* construct in later
-phases, never as stored data.
+identical data. This difference is therefore exercised as a *query* construct in the
+source-unit pool, never as stored data.
 
 ## 2. Concatenation with NULL
 
@@ -158,7 +158,7 @@ view compared clean on every column except `transit_days`, which divides a day c
 
 **Consequence.** Two things follow. First, the reference view now rounds explicitly on
 both sides, so the graded translation is unambiguous. Second — and more importantly —
-phase 3's result-set comparator cannot compare numerics by their text form. It needs to
+the result-set comparator cannot compare numerics by their text form. It needs to
 compare decimal *values*, with a tolerance for the results of inexact arithmetic.
 That requirement comes from this measurement, not from guesswork.
 

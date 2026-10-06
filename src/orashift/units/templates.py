@@ -13,7 +13,7 @@ A note on non-determinism: ``SYSDATE`` and sequence values change between runs.
 They are still worth covering, so they are used only in ways whose *result* is
 stable (``WHERE date_col < SYSDATE``, ``TRUNC(SYSDATE)``), and statements whose
 value genuinely cannot match across two engines are tagged
-``value_comparable=false`` for phase 3 to handle.
+``value_comparable=false`` for verification to handle.
 """
 
 from __future__ import annotations

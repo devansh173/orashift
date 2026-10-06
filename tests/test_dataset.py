@@ -279,7 +279,7 @@ def test_the_dataset_card_exists_and_is_not_a_stub():
         pytest.skip("dataset not built")
     text = path.read_text(encoding="utf-8")
     assert "Honest limitations" in text
-    assert "estimates, not measurements" in text
+    assert "Token lengths at build time are estimates" in text
     assert HELD_OUT_SCHEMA in text
 
 
@@ -319,7 +319,8 @@ def test_every_notebook_cell_is_valid_python():
         assert check(path) == [], f"{path} failed static checks"
 
 
-def test_the_training_notebook_says_it_is_unverified():
-    """It ships unrun, and must not imply otherwise."""
+def test_the_training_notebook_points_to_its_run_record():
+    """It ships with outputs cleared, so it must say where the measured run lives."""
     text = Path("notebooks/train_qlora.ipynb").read_text(encoding="utf-8")
-    assert "has not been executed by its author" in text
+    assert "results/train_run.json" in text
+    assert Path("results/train_run.json").exists()

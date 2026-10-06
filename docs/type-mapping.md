@@ -1,6 +1,6 @@
 # Type-mapping policy
 
-This is the contract DDL translations are graded against. When phase 3 verifies a
+This is the contract DDL translations are graded against. When verification checks a
 translated `CREATE TABLE`, it creates the table on PostgreSQL and compares the resulting
 catalogue metadata to what this policy requires. A translation that runs but produces a
 different column type is a **failure**, not a pass.
@@ -95,7 +95,7 @@ Carried over unchanged, keeping the constraint names so metadata comparison is m
 - `CREATE INDEX name ON table (cols)`
 
 Named rather than anonymous constraints are used throughout the reference schemas, because
-phase 3 compares catalogue metadata and system-generated names (`SYS_C0010423`) are not
+verification compares catalogue metadata and system-generated names (`SYS_C0010423`) are not
 comparable across engines.
 
 ## Identifier case
