@@ -1045,3 +1045,101 @@ otherwise succeeded, because by then a GPU session has already been spent.
 than a Kaggle Dataset upload. That way the training data always matches what is committed,
 and anyone reproducing the work gets the identical files with no manual step. It needs
 Kaggle's internet toggle, which the model download requires anyway.
+
+---
+
+## D45 — Models are scored by the same verifier that graded the baselines
+
+**Decision.** `orashift eval` runs model predictions through exactly the verifier from
+phase 3 — the same comparison rules, timeouts, ordered-versus-multiset logic and
+shape-only handling that graded the hand-written references, `sqlglot` and `ora2pg`.
+
+**Alternatives.**
+- *A separate, simpler scorer for model output.* Easier to write.
+- *Score on text similarity.* Trivial.
+
+**Why.** A number is only a comparison if every system is measured the same way. Writing a
+second scorer would mean the model and the baselines were held to subtly different
+standards, and any difference in the results could be an artefact of that rather than of
+translation quality.
+
+This is also the strongest argument for the architecture: because the verifier was built
+first, in phase 3, scoring the model was a matter of pointing it at a different candidate
+source rather than writing anything new.
+
+**What it immediately showed.** Text match said the base model scored 38% and the
+fine-tuned model 86%. Execution says **74.2% and 86.4%**. The base model was producing
+*differently worded but correct* translations roughly a third of the time, and text
+similarity scored every one of those as a failure. Reporting the text number would have
+inflated the fine-tune's apparent benefit from 12 points to 48.
+
+---
+
+## D46 — The hybrid is sqlglot first, the fine-tuned model as fallback
+
+**Decision.** For each unit the hybrid takes `sqlglot`'s translation when it verifies, and
+the fine-tuned model's otherwise. Reported as its own column.
+
+**Alternatives.**
+- *Model first, rules as fallback.*
+- *Report only the model.*
+- *A learned router.*
+
+**Why.** This is the system you would actually ship. Rules are free, instant and
+deterministic; a model costs a GPU and can hallucinate. Trying rules first and falling back
+only where they fail is the sensible default, and it bounds the model's blast radius to the
+cases rules cannot handle.
+
+Ordering it the other way would waste the rule engine's reliability on cases it already
+solves. A learned router is a reasonable next step but needs a confidence signal this
+project does not have.
+
+**Result:** 288/330 (87.3%), the best of any strategy, and 3 units better than the
+fine-tuned model alone. The gain shows up where it should — on unseen templates, where
+`sqlglot`'s rules do not care that a construct variant is new.
+
+---
+
+## D47 — ora2pg is reported but not charted
+
+**Decision.** `ora2pg` appears in `metrics.json` and the report tables, but is excluded
+from the README charts.
+
+**Alternatives.**
+- *Chart it alongside everything else.*
+- *Drop it entirely.*
+
+**Why.** It translates DDL only, so it is scored over 11 of the 330 test units. Putting a
+bar with a different denominator next to four bars sharing one is the kind of chart that
+reads as "ora2pg is the best strategy at 100%" when it has in fact answered a twentieth of
+the exam. The tables carry the number with its denominator visible, which is where a
+reader can see the caveat.
+
+A test enforces that every charted strategy shares the same denominator.
+
+---
+
+## D48 — Charts use a validated palette, rendered for both light and dark
+
+**Decision.** Two charts, four colours, generated from `metrics.json`. The palette was
+checked with a validator for colourblind separation, chroma and lightness band before
+being used. Light and dark versions of each chart are written and the README selects
+between them.
+
+**Alternatives.**
+- *Matplotlib defaults.*
+- *Pick colours by eye.*
+- *One light-surface chart for both themes.*
+
+**Why.** Whether a palette is colourblind-safe is computable, so it was computed rather
+than guessed: the four hues clear a CVD separation of ΔE 9.1 and a normal-vision
+separation of 22.9. The validator also warned that two of them fall below 3:1 contrast
+against the chart surface, which obliges visible labels — so every bar carries its own
+value, which it should have anyway.
+
+A single light-surface PNG is unreadable on a dark README page, and inverting one
+automatically produces muddy hues, so the dark version is a separate selected palette
+rather than a flip.
+
+Both charts are regenerated from `metrics.json` on every `orashift eval`, so a chart cannot
+drift away from the numbers it claims to show.

@@ -7,6 +7,7 @@ phases exit with a clear message rather than pretending to work.
 
 from __future__ import annotations
 
+import json
 from enum import StrEnum
 from pathlib import Path
 from typing import Annotated, NoReturn
@@ -20,6 +21,9 @@ from orashift.config import Settings, get_settings
 from orashift.dataset import build as dataset_build
 from orashift.dataset import card as dataset_card
 from orashift.db.base import ServerInfo
+from orashift.eval import charts as eval_charts
+from orashift.eval import report as eval_report
+from orashift.eval import score as eval_score
 from orashift.logging import configure_logging, get_logger
 from orashift.seed import generate as seed_generate
 from orashift.seed import load as seed_load
@@ -515,6 +519,50 @@ def translate(
 
 
 @app.command("eval")
-def run_eval() -> None:
-    """Score every translation strategy and write results/metrics.json."""
-    _not_implemented(7, "eval")
+def run_eval(
+    rescore: Annotated[
+        bool, typer.Option("--rescore", help="Re-execute predictions already scored.")
+    ] = False,
+    limit: Annotated[
+        int | None, typer.Option("--limit", help="Score only this many per model.")
+    ] = None,
+    make_charts: Annotated[
+        bool, typer.Option("--charts/--no-charts", help="Render the README charts.")
+    ] = True,
+) -> None:
+    """Score every translation strategy by execution and write results/."""
+    settings = get_settings()
+
+    summaries = eval_score.score_all(settings, resume=not rescore, limit=limit)
+    for summary in summaries.values():
+        console.print(
+            f"{summary.model}: {summary.verified}/{summary.scored} verified "
+            f"({summary.execution_accuracy:.1%}), "
+            f"{summary.runs_without_error:.1%} ran without error"
+        )
+
+    metrics_path, report_path = eval_report.write()
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+
+    table = Table(title="Execution accuracy", title_justify="left")
+    table.add_column("Strategy", style="bold")
+    table.add_column("Overall", justify="right")
+    for split in eval_report.SPLITS:
+        table.add_column(split.replace("test_", ""), justify="right")
+
+    for model in metrics["models"]:
+        cells = []
+        for split in eval_report.SPLITS:
+            cell = metrics["by_split"][split][model]
+            cells.append(f"{cell['rate']:.0%}" if cell["total"] else "-")
+        overall = metrics["execution_accuracy"][model]
+        table.add_row(
+            model, f"{overall['rate']:.0%} ({overall['verified']}/{overall['total']})", *cells
+        )
+    console.print(table)
+
+    console.print(f"\nwrote {metrics_path} and {report_path}")
+
+    if make_charts:
+        for path in eval_charts.write_all():
+            console.print(f"  chart: {path}")

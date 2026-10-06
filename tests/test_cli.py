@@ -14,8 +14,10 @@ runner = CliRunner()
 # Commands still stubbed out. Everything else is covered elsewhere and must not
 # be invoked here: seed, generate and verify would hit real databases, and
 # build-dataset is exercised through tests/test_dataset.py.
-LATER_PHASE_COMMANDS = ["eval"]
+# Every command is implemented now; nothing is stubbed.
+LATER_PHASE_COMMANDS: list[str] = []
 IMPLEMENTED_COMMANDS = [
+    "eval",
     "check-connections",
     "seed",
     "generate",
@@ -30,6 +32,14 @@ def test_help_lists_the_whole_pipeline():
     assert result.exit_code == 0
     for command in [*IMPLEMENTED_COMMANDS, *LATER_PHASE_COMMANDS, "translate"]:
         assert command in result.output
+
+
+def test_not_implemented_helper_still_works():
+    """Kept for phase 9, which may add commands; nothing uses it right now."""
+    import typer as _typer
+
+    with pytest.raises(_typer.Exit):
+        _not_implemented(9, "plsql")
 
 
 @pytest.mark.parametrize("command", IMPLEMENTED_COMMANDS)

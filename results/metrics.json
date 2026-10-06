@@ -1,0 +1,1240 @@
+{
+  "test_units": 330,
+  "models": {
+    "base": "Base (Qwen2.5-Coder-3B-Instruct, no adapter)",
+    "finetuned": "Fine-tuned (QLoRA adapter)",
+    "sqlglot": "sqlglot (rule-based)",
+    "ora2pg": "ora2pg (DDL only)",
+    "hybrid": "Hybrid (sqlglot, fine-tuned fallback)"
+  },
+  "execution_accuracy": {
+    "base": {
+      "verified": 245,
+      "total": 330,
+      "rate": 0.7424
+    },
+    "finetuned": {
+      "verified": 285,
+      "total": 330,
+      "rate": 0.8636
+    },
+    "sqlglot": {
+      "verified": 202,
+      "total": 330,
+      "rate": 0.6121
+    },
+    "ora2pg": {
+      "verified": 11,
+      "total": 11,
+      "rate": 1.0
+    },
+    "hybrid": {
+      "verified": 288,
+      "total": 330,
+      "rate": 0.8727
+    }
+  },
+  "runs_without_error": {
+    "base": {
+      "verified": 290,
+      "total": 330,
+      "rate": 0.8788
+    },
+    "finetuned": {
+      "verified": 290,
+      "total": 330,
+      "rate": 0.8788
+    },
+    "sqlglot": {
+      "verified": 217,
+      "total": 330,
+      "rate": 0.6576
+    },
+    "ora2pg": {
+      "verified": 11,
+      "total": 11,
+      "rate": 1.0
+    },
+    "hybrid": {
+      "verified": 297,
+      "total": 330,
+      "rate": 0.9
+    }
+  },
+  "by_split": {
+    "test_in_schema": {
+      "base": {
+        "verified": 26,
+        "total": 33,
+        "rate": 0.7879
+      },
+      "finetuned": {
+        "verified": 32,
+        "total": 33,
+        "rate": 0.9697
+      },
+      "sqlglot": {
+        "verified": 19,
+        "total": 33,
+        "rate": 0.5758
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 32,
+        "total": 33,
+        "rate": 0.9697
+      }
+    },
+    "test_unseen_schema": {
+      "base": {
+        "verified": 125,
+        "total": 160,
+        "rate": 0.7812
+      },
+      "finetuned": {
+        "verified": 158,
+        "total": 160,
+        "rate": 0.9875
+      },
+      "sqlglot": {
+        "verified": 95,
+        "total": 160,
+        "rate": 0.5938
+      },
+      "ora2pg": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 158,
+        "total": 160,
+        "rate": 0.9875
+      }
+    },
+    "test_unseen_template": {
+      "base": {
+        "verified": 69,
+        "total": 102,
+        "rate": 0.6765
+      },
+      "finetuned": {
+        "verified": 71,
+        "total": 102,
+        "rate": 0.6961
+      },
+      "sqlglot": {
+        "verified": 66,
+        "total": 102,
+        "rate": 0.6471
+      },
+      "ora2pg": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 73,
+        "total": 102,
+        "rate": 0.7157
+      }
+    },
+    "test_unseen_both": {
+      "base": {
+        "verified": 25,
+        "total": 35,
+        "rate": 0.7143
+      },
+      "finetuned": {
+        "verified": 24,
+        "total": 35,
+        "rate": 0.6857
+      },
+      "sqlglot": {
+        "verified": 22,
+        "total": 35,
+        "rate": 0.6286
+      },
+      "ora2pg": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 25,
+        "total": 35,
+        "rate": 0.7143
+      }
+    }
+  },
+  "split_labels": {
+    "test_in_schema": "Seen schema, seen template",
+    "test_unseen_schema": "Unseen schema, seen template",
+    "test_unseen_template": "Seen schema, unseen template",
+    "test_unseen_both": "Unseen schema, unseen template"
+  },
+  "by_category": {
+    "add_months": {
+      "base": {
+        "verified": 2,
+        "total": 23,
+        "rate": 0.087
+      },
+      "finetuned": {
+        "verified": 19,
+        "total": 23,
+        "rate": 0.8261
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 23,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 19,
+        "total": 23,
+        "rate": 0.8261
+      }
+    },
+    "aggregate": {
+      "base": {
+        "verified": 13,
+        "total": 15,
+        "rate": 0.8667
+      },
+      "finetuned": {
+        "verified": 15,
+        "total": 15,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 15,
+        "total": 15,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 15,
+        "total": 15,
+        "rate": 1.0
+      }
+    },
+    "analytic": {
+      "base": {
+        "verified": 11,
+        "total": 11,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 11,
+        "total": 11,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 11,
+        "total": 11,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 11,
+        "total": 11,
+        "rate": 1.0
+      }
+    },
+    "connect_by": {
+      "base": {
+        "verified": 3,
+        "total": 9,
+        "rate": 0.3333
+      },
+      "finetuned": {
+        "verified": 6,
+        "total": 9,
+        "rate": 0.6667
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 9,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 6,
+        "total": 9,
+        "rate": 0.6667
+      }
+    },
+    "cte": {
+      "base": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      }
+    },
+    "ddl_constraint": {
+      "base": {
+        "verified": 0,
+        "total": 2,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 1,
+        "total": 2,
+        "rate": 0.5
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 2,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 2,
+        "total": 2,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 1,
+        "total": 2,
+        "rate": 0.5
+      }
+    },
+    "ddl_index": {
+      "base": {
+        "verified": 0,
+        "total": 1,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 0,
+        "total": 1,
+        "rate": 0.0
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 1,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 0,
+        "total": 1,
+        "rate": 0.0
+      }
+    },
+    "ddl_sequence": {
+      "base": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      }
+    },
+    "ddl_table": {
+      "base": {
+        "verified": 0,
+        "total": 1,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 1,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      }
+    },
+    "ddl_view": {
+      "base": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "hybrid": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      }
+    },
+    "decode": {
+      "base": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      }
+    },
+    "dml_delete": {
+      "base": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      }
+    },
+    "dml_insert": {
+      "base": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 1,
+        "total": 1,
+        "rate": 1.0
+      }
+    },
+    "dml_update": {
+      "base": {
+        "verified": 3,
+        "total": 3,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 3,
+        "total": 3,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 2,
+        "total": 3,
+        "rate": 0.6667
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 3,
+        "total": 3,
+        "rate": 1.0
+      }
+    },
+    "dual": {
+      "base": {
+        "verified": 1,
+        "total": 2,
+        "rate": 0.5
+      },
+      "finetuned": {
+        "verified": 2,
+        "total": 2,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 2,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 2,
+        "total": 2,
+        "rate": 1.0
+      }
+    },
+    "fetch_first": {
+      "base": {
+        "verified": 48,
+        "total": 49,
+        "rate": 0.9796
+      },
+      "finetuned": {
+        "verified": 49,
+        "total": 49,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 48,
+        "total": 49,
+        "rate": 0.9796
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 49,
+        "total": 49,
+        "rate": 1.0
+      }
+    },
+    "listagg": {
+      "base": {
+        "verified": 0,
+        "total": 5,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 2,
+        "total": 5,
+        "rate": 0.4
+      },
+      "sqlglot": {
+        "verified": 3,
+        "total": 5,
+        "rate": 0.6
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 5,
+        "total": 5,
+        "rate": 1.0
+      }
+    },
+    "merge": {
+      "base": {
+        "verified": 0,
+        "total": 5,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 1,
+        "total": 5,
+        "rate": 0.2
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 5,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 1,
+        "total": 5,
+        "rate": 0.2
+      }
+    },
+    "minus": {
+      "base": {
+        "verified": 6,
+        "total": 7,
+        "rate": 0.8571
+      },
+      "finetuned": {
+        "verified": 7,
+        "total": 7,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 6,
+        "total": 7,
+        "rate": 0.8571
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 7,
+        "total": 7,
+        "rate": 1.0
+      }
+    },
+    "null_concat": {
+      "base": {
+        "verified": 5,
+        "total": 6,
+        "rate": 0.8333
+      },
+      "finetuned": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 5,
+        "total": 6,
+        "rate": 0.8333
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 6,
+        "total": 6,
+        "rate": 1.0
+      }
+    },
+    "nvl": {
+      "base": {
+        "verified": 8,
+        "total": 10,
+        "rate": 0.8
+      },
+      "finetuned": {
+        "verified": 10,
+        "total": 10,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 10,
+        "total": 10,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 10,
+        "total": 10,
+        "rate": 1.0
+      }
+    },
+    "outer_join_plus": {
+      "base": {
+        "verified": 7,
+        "total": 7,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 7,
+        "total": 7,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 5,
+        "total": 7,
+        "rate": 0.7143
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 7,
+        "total": 7,
+        "rate": 1.0
+      }
+    },
+    "pivot": {
+      "base": {
+        "verified": 0,
+        "total": 5,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 1,
+        "total": 5,
+        "rate": 0.2
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 5,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 1,
+        "total": 5,
+        "rate": 0.2
+      }
+    },
+    "rownum": {
+      "base": {
+        "verified": 27,
+        "total": 31,
+        "rate": 0.871
+      },
+      "finetuned": {
+        "verified": 31,
+        "total": 31,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 31,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 31,
+        "total": 31,
+        "rate": 1.0
+      }
+    },
+    "sequence": {
+      "base": {
+        "verified": 0,
+        "total": 2,
+        "rate": 0.0
+      },
+      "finetuned": {
+        "verified": 2,
+        "total": 2,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 2,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 2,
+        "total": 2,
+        "rate": 1.0
+      }
+    },
+    "string_func": {
+      "base": {
+        "verified": 17,
+        "total": 17,
+        "rate": 1.0
+      },
+      "finetuned": {
+        "verified": 17,
+        "total": 17,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 17,
+        "total": 17,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 17,
+        "total": 17,
+        "rate": 1.0
+      }
+    },
+    "subquery": {
+      "base": {
+        "verified": 7,
+        "total": 9,
+        "rate": 0.7778
+      },
+      "finetuned": {
+        "verified": 9,
+        "total": 9,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 9,
+        "total": 9,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 9,
+        "total": 9,
+        "rate": 1.0
+      }
+    },
+    "sysdate": {
+      "base": {
+        "verified": 23,
+        "total": 26,
+        "rate": 0.8846
+      },
+      "finetuned": {
+        "verified": 2,
+        "total": 26,
+        "rate": 0.0769
+      },
+      "sqlglot": {
+        "verified": 2,
+        "total": 26,
+        "rate": 0.0769
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 2,
+        "total": 26,
+        "rate": 0.0769
+      }
+    },
+    "to_char_date": {
+      "base": {
+        "verified": 33,
+        "total": 44,
+        "rate": 0.75
+      },
+      "finetuned": {
+        "verified": 44,
+        "total": 44,
+        "rate": 1.0
+      },
+      "sqlglot": {
+        "verified": 44,
+        "total": 44,
+        "rate": 1.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 44,
+        "total": 44,
+        "rate": 1.0
+      }
+    },
+    "trunc_date": {
+      "base": {
+        "verified": 6,
+        "total": 15,
+        "rate": 0.4
+      },
+      "finetuned": {
+        "verified": 14,
+        "total": 15,
+        "rate": 0.9333
+      },
+      "sqlglot": {
+        "verified": 0,
+        "total": 15,
+        "rate": 0.0
+      },
+      "ora2pg": {
+        "verified": 0,
+        "total": 0,
+        "rate": 0.0
+      },
+      "hybrid": {
+        "verified": 14,
+        "total": 15,
+        "rate": 0.9333
+      }
+    }
+  },
+  "failure_analysis": {
+    "base": {
+      "failures": 85,
+      "by_reason": {
+        "translation failed to run": 40,
+        "row values differ": 29,
+        "metadata does not match the type policy": 4,
+        "row count differs: 30 vs 12": 2,
+        "row count differs: 12 vs 3": 1,
+        "row count differs: 60 vs 57": 1,
+        "row count differs: 50 vs 49": 1,
+        "row count differs: 40 vs 38": 1,
+        "row count differs: 49 vs 47": 1,
+        "row count differs: 10 vs 190": 1,
+        "row count differs: 51 vs 52": 1,
+        "row count differs: 57 vs 12": 1,
+        "row count differs: 47 vs 48": 1,
+        "row count differs: 19 vs 12": 1
+      },
+      "by_category": {
+        "add_months": 21,
+        "to_char_date": 11,
+        "trunc_date": 9,
+        "connect_by": 6,
+        "pivot": 5,
+        "listagg": 5,
+        "merge": 5,
+        "rownum": 4,
+        "sysdate": 3,
+        "nvl": 2
+      },
+      "examples": [
+        {
+          "category": "add_months",
+          "split": "test_in_schema",
+          "reason": "row values differ",
+          "detail": "row 0: oracle=('90000', '2025-05-07 15:12:19') postgres=('90000', '1746630739')",
+          "oracle": "SELECT loan_id, ADD_MONTHS(borrowed_at, -1) AS shifted FROM library_loans ORDER BY loan_id",
+          "prediction": "SELECT loan_id, EXTRACT(EPOCH FROM (borrowed_at - INTERVAL '1 month'))::BIGINT AS shifted FROM library_loans ORDER BY loan_id"
+        },
+        {
+          "category": "trunc_date",
+          "split": "test_in_schema",
+          "reason": "row values differ",
+          "detail": "row 0: oracle=('90000', '2025-06-01 00:00:00') postgres=('90000', '2025-06')",
+          "oracle": "SELECT loan_id, TRUNC(borrowed_at, 'MM') AS d FROM library_loans ORDER BY loan_id",
+          "prediction": "SELECT loan_id, TO_CHAR(borrowed_at, 'YYYY-MM') AS d FROM library_loans ORDER BY loan_id"
+        },
+        {
+          "category": "nvl",
+          "split": "test_in_schema",
+          "reason": "row values differ",
+          "detail": "row 0: oracle=('500000', '\\x00NULL') postgres=('500000', '0')",
+          "oracle": "SELECT order_id, NULLIF(discount_pct, 0) AS v FROM retail_orders ORDER BY order_id",
+          "prediction": "SELECT order_id, COALESCE(discount_pct, 0) AS v FROM retail_orders ORDER BY order_id"
+        },
+        {
+          "category": "add_months",
+          "split": "test_in_schema",
+          "reason": "translation failed to run",
+          "detail": "function last_day(timestamp without time zone) does not exist",
+          "oracle": "SELECT order_id, LAST_DAY(order_date) AS eom FROM retail_orders ORDER BY order_id",
+          "prediction": "SELECT order_id, last_day(order_date) AS eom FROM retail_orders ORDER BY order_id"
+        },
+        {
+          "category": "add_months",
+          "split": "test_in_schema",
+          "reason": "row values differ",
+          "detail": "sorted row 0: oracle=('154',) postgres=('161',)",
+          "oracle": "SELECT COUNT(*) AS n FROM library_loans WHERE borrowed_at < ADD_MONTHS(TO_DATE('2026-01-01','YYYY-MM-DD'), -1)",
+          "prediction": "SELECT COUNT(*) AS n FROM library_loans WHERE borrowed_at < TO_TIMESTAMP('2025-12-31 23:59:59', 'YYYY-MM-DD HH24:MI:SS')"
+        },
+        {
+          "category": "add_months",
+          "split": "test_in_schema",
+          "reason": "row values differ",
+          "detail": "row 1: oracle=('90001', '0.16129') postgres=('90001', '0')",
+          "oracle": "SELECT loan_id, MONTHS_BETWEEN(returned_at, borrowed_at) AS gap FROM library_loans ORDER BY loan_id",
+          "prediction": "SELECT loan_id, EXTRACT(MONTH FROM returned_at - borrowed_at) AS gap FROM library_loans ORDER BY loan_id"
+        },
+        {
+          "category": "connect_by",
+          "split": "test_in_schema",
+          "reason": "row count differs: 12 vs 3",
+          "detail": "",
+          "oracle": "SELECT category_id, SYS_CONNECT_BY_PATH(category_name, '/') AS path FROM retail_categories START WITH parent_category_id IS NULL CONNECT BY PRIOR category_id = parent_category_id ORDER BY category_id",
+          "prediction": "SELECT category_id, string_agg(category_name, '/') AS path FROM retail_categories WHERE parent_category_id IS NULL GROUP BY category_id ORDER BY category_id"
+        },
+        {
+          "category": "nvl",
+          "split": "test_unseen_schema",
+          "reason": "row values differ",
+          "detail": "row 16: oracle=('7000016', '\\x00NULL') postgres=('7000016', '0')",
+          "oracle": "SELECT shipment_id, NULLIF(gross_weight_kg, 0) AS v FROM logistics_shipments ORDER BY shipment_id",
+          "prediction": "SELECT shipment_id, COALESCE(gross_weight_kg, 0) AS v FROM logistics_shipments ORDER BY shipment_id"
+        },
+        {
+          "category": "pivot",
+          "split": "test_unseen_schema",
+          "reason": "translation failed to run",
+          "detail": "syntax error at or near \"(\"",
+          "oracle": "SELECT * FROM (SELECT status, shipment_id FROM logistics_shipments) PIVOT (COUNT(shipment_id) FOR status IN ('BOOKED' AS c_booked, 'IN_TRANSIT' AS c_transit, 'DELIVERED' AS c_delivered, 'EXCEPTION' AS c_exception))",
+          "prediction": "SELECT status, c_booked, c_transit, c_delivered, c_exception FROM ( SELECT status, shipment_id FROM logistics_shipments ) PIVOT ( COUNT(shipment_id) AS c_count FOR status IN ('BOOKED' AS c_booked, 'IN_TRANSIT' AS c_trans"
+        },
+        {
+          "category": "listagg",
+          "split": "test_unseen_schema",
+          "reason": "translation failed to run",
+          "detail": "function to_char(numeric) does not exist",
+          "oracle": "SELECT carrier_id, LISTAGG(TO_CHAR(gross_weight_kg), ',') WITHIN GROUP (ORDER BY gross_weight_kg) AS vals FROM logistics_shipments GROUP BY carrier_id ORDER BY carrier_id",
+          "prediction": "SELECT carrier_id, STRING_AGG(TO_CHAR(gross_weight_kg), ',') WITHIN GROUP (ORDER BY gross_weight_kg) AS vals FROM logistics_shipments GROUP BY carrier_id ORDER BY carrier_id"
+        },
+        {
+          "category": "add_months",
+          "split": "test_unseen_schema",
+          "reason": "row values differ",
+          "detail": "row 0: oracle=('7000000', '2026-08-21 18:07:57') postgres=('7000000', '2026-08-01 00:00:00')",
+          "oracle": "SELECT shipment_id, ADD_MONTHS(dispatched_at, 12) AS shifted FROM logistics_shipments ORDER BY shipment_id",
+          "prediction": "SELECT shipment_id, date_trunc('month', dispatched_at + INTERVAL '1 year') AS shifted FROM logistics_shipments ORDER BY shipment_id"
+        },
+        {
+          "category": "add_months",
+          "split": "test_unseen_schema",
+          "reason": "row values differ",
+          "detail": "sorted row 0: oracle=('0',) postgres=('83',)",
+          "oracle": "SELECT COUNT(*) AS n FROM logistics_shipments WHERE dispatched_at < ADD_MONTHS(TO_DATE('2026-01-01','YYYY-MM-DD'), -24)",
+          "prediction": "SELECT COUNT(*) AS n FROM logistics_shipments WHERE dispatched_at < TO_TIMESTAMP('2025-12-31 23:59:59', 'YYYY-MM-DD HH24:MI:SS')"
+        }
+      ]
+    },
+    "finetuned": {
+      "failures": 45,
+      "by_reason": {
+        "translation failed to run": 40,
+        "row values differ": 3,
+        "metadata does not match the type policy": 2
+      },
+      "by_category": {
+        "sysdate": 24,
+        "add_months": 4,
+        "merge": 4,
+        "pivot": 4,
+        "connect_by": 3,
+        "listagg": 3,
+        "ddl_index": 1,
+        "ddl_constraint": 1,
+        "trunc_date": 1
+      },
+      "examples": [
+        {
+          "category": "add_months",
+          "split": "test_in_schema",
+          "reason": "translation failed to run",
+          "detail": "operator does not exist: interval / interval",
+          "oracle": "SELECT loan_id, MONTHS_BETWEEN(returned_at, borrowed_at) AS gap FROM library_loans ORDER BY loan_id",
+          "prediction": "SELECT loan_id, CAST(returned_at - borrowed_at AS interval) / INTERVAL '1 month' AS gap FROM library_loans ORDER BY loan_id"
+        },
+        {
+          "category": "ddl_index",
+          "split": "test_unseen_schema",
+          "reason": "metadata does not match the type policy",
+          "detail": "tmp_ddl_index_single_log_1: indexed columns differ, oracle=['label'] postgres=[]",
+          "oracle": "CREATE TABLE tmp_ddl_index_single_log_0 (id NUMBER(10), label VARCHAR2(40)); CREATE INDEX tmp_ddl_index_single_log_1 ON tmp_ddl_index_single_log_0 (label)",
+          "prediction": "CREATE TABLE tmp_ddl_index_single_log_0 (id bigint, label varchar(40))"
+        },
+        {
+          "category": "add_months",
+          "split": "test_unseen_schema",
+          "reason": "translation failed to run",
+          "detail": "syntax error at or near \"AS\"",
+          "oracle": "SELECT shipment_id, MONTHS_BETWEEN(delivered_at, dispatched_at) AS gap FROM logistics_shipments ORDER BY shipment_id",
+          "prediction": "SELECT shipment_id, CASE WHEN delivered_at IS NOT NULL THEN CAST(delivered_at AS date) - CAST(dispatched_at AS date) AS INTERVAL AS gap FROM logistics_shipments ORDER BY shipment_id"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM retail_orders WHERE order_date BETWEEN ADD_MONTHS(SYSDATE, -12) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM retail_orders WHERE order_date BETWEEN ADD_MONTHS(SYSDATE, -12) AND SYSDATE"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM hr_employees WHERE hire_date BETWEEN ADD_MONTHS(SYSDATE, -36) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM hr_employees WHERE hire_date BETWEEN ADD_MONTHS(SYSDATE, -36) AND SYSDATE"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM library_loans WHERE borrowed_at BETWEEN ADD_MONTHS(SYSDATE, -3) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM library_loans WHERE borrowed_at BETWEEN ADD_MONTHS(SYSDATE, -3) AND SYSDATE"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM retail_orders WHERE order_date BETWEEN ADD_MONTHS(SYSDATE, -24) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM retail_orders WHERE order_date BETWEEN ADD_MONTHS(SYSDATE, -24) AND SYSDATE"
+        },
+        {
+          "category": "connect_by",
+          "split": "test_unseen_template",
+          "reason": "row values differ",
+          "detail": "row 0: oracle=('200', '0') postgres=('200', '1')",
+          "oracle": "SELECT employee_id, CONNECT_BY_ISLEAF AS is_leaf FROM hr_employees START WITH manager_id IS NULL CONNECT BY PRIOR employee_id = manager_id ORDER BY employee_id",
+          "prediction": "WITH RECURSIVE t AS ( SELECT employee_id, TRUE AS is_leaf FROM hr_employees WHERE manager_id IS NULL UNION ALL SELECT c.employee_id, p.is_leaf FROM hr_employees c JOIN t p ON c.manager_id = p.employee_id ) SELECT employe"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM hr_employees WHERE hire_date BETWEEN ADD_MONTHS(SYSDATE, -3) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM hr_employees WHERE hire_date BETWEEN ADD_MONTHS(SYSDATE, -3) AND SYSDATE"
+        },
+        {
+          "category": "merge",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "syntax error at or near \"WHERE\"",
+          "oracle": "MERGE INTO retail_orders t USING (SELECT customer_id AS k FROM retail_customers) s ON (t.customer_id = s.k) WHEN MATCHED THEN UPDATE SET t.order_date = t.order_date WHERE t.order_id < 0",
+          "prediction": "MERGE INTO retail_orders t USING (SELECT customer_id AS k FROM retail_customers) s ON (t.customer_id = s.k) WHEN MATCHED THEN UPDATE SET order_date = t.order_date WHERE t.order_id < 0"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM retail_orders WHERE order_date BETWEEN ADD_MONTHS(SYSDATE, -1) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM retail_orders WHERE order_date BETWEEN ADD_MONTHS(SYSDATE, -1) AND SYSDATE"
+        },
+        {
+          "category": "sysdate",
+          "split": "test_unseen_template",
+          "reason": "translation failed to run",
+          "detail": "column \"sysdate\" does not exist",
+          "oracle": "SELECT COUNT(*) AS n FROM hr_employees WHERE hire_date BETWEEN ADD_MONTHS(SYSDATE, -6) AND SYSDATE",
+          "prediction": "SELECT COUNT(*) AS n FROM hr_employees WHERE hire_date BETWEEN ADD_MONTHS(SYSDATE, -6) AND SYSDATE"
+        }
+      ]
+    }
+  }
+}

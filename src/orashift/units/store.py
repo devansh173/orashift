@@ -59,6 +59,25 @@ CREATE TABLE IF NOT EXISTS attempts (
 );
 
 CREATE INDEX IF NOT EXISTS attempts_ix_source ON attempts (candidate_source, status);
+
+-- Execution scores for model predictions. Keyed by (model, unit) so a rerun
+-- skips what is already scored: executing 660 statements against two engines
+-- takes minutes, and an interrupted run should not start over.
+CREATE TABLE IF NOT EXISTS scores (
+    model       TEXT NOT NULL,
+    unit_key    TEXT NOT NULL,
+    split       TEXT NOT NULL,
+    prediction  TEXT,
+    ok          INTEGER NOT NULL,
+    ran         INTEGER NOT NULL,
+    reason      TEXT,
+    detail      TEXT,
+    duration_ms REAL,
+    scored_at   TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (model, unit_key)
+);
+
+CREATE INDEX IF NOT EXISTS scores_ix_model ON scores (model, split);
 """
 
 
@@ -319,5 +338,83 @@ def verified_pairs(conn: sqlite3.Connection, source: str = "gold") -> list[dict[
          ORDER BY u.schema_name, u.category, u.unit_key
         """,
         (source,),
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
+# --------------------------------------------------------------------------- #
+# Execution scores
+# --------------------------------------------------------------------------- #
+
+
+def record_score(
+    conn: sqlite3.Connection,
+    model: str,
+    unit_key: str,
+    split: str,
+    *,
+    prediction: str | None,
+    ok: bool,
+    ran: bool,
+    reason: str | None = None,
+    detail: str | None = None,
+    duration_ms: float | None = None,
+) -> None:
+    conn.execute(
+        """
+        INSERT INTO scores
+            (model, unit_key, split, prediction, ok, ran, reason, detail, duration_ms)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT (model, unit_key) DO UPDATE SET
+            split = excluded.split,
+            prediction = excluded.prediction,
+            ok = excluded.ok,
+            ran = excluded.ran,
+            reason = excluded.reason,
+            detail = excluded.detail,
+            duration_ms = excluded.duration_ms,
+            scored_at = datetime('now')
+        """,
+        (model, unit_key, split, prediction, int(ok), int(ran), reason, detail, duration_ms),
+    )
+
+
+def scored_keys(conn: sqlite3.Connection, model: str) -> set[str]:
+    return {row[0] for row in conn.execute("SELECT unit_key FROM scores WHERE model = ?", (model,))}
+
+
+def score_rows(conn: sqlite3.Connection) -> list[dict[str, object]]:
+    """Every score joined to its unit, for aggregation."""
+    rows = conn.execute(
+        """
+        SELECT s.model, s.unit_key, s.split, s.ok, s.ran, s.reason, s.detail,
+               u.category, u.unit_type, u.schema_name, u.template_id, u.sql_text,
+               s.prediction
+          FROM scores s JOIN units u ON u.unit_key = s.unit_key
+        """
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def baseline_rows_for(conn: sqlite3.Connection, unit_keys: list[str]) -> list[dict[str, object]]:
+    """sqlglot and ora2pg results, restricted to the units given.
+
+    Phase 3 measured those baselines over the whole pool. Comparing them to the
+    models requires restricting them to the same test units, or the comparison
+    would be across different populations.
+    """
+    if not unit_keys:
+        return []
+    placeholders = ",".join("?" * len(unit_keys))
+    rows = conn.execute(
+        f"""
+        SELECT a.candidate_source AS model, a.unit_key, a.status, a.ran_on_postgres,
+               a.reason, a.translated_sql,
+               u.category, u.unit_type, u.schema_name, u.template_id
+          FROM attempts a JOIN units u ON u.unit_key = a.unit_key
+         WHERE a.unit_key IN ({placeholders})
+           AND a.candidate_source IN ('sqlglot', 'ora2pg')
+        """,
+        unit_keys,
     ).fetchall()
     return [dict(row) for row in rows]

@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 UV ?= uv
 
-.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset check-notebooks train-kaggle kaggle-status ora2pg-pull up down logs clean
+.PHONY: help setup lint fmt test test-db check check-connections seed reseed generate verify dataset eval check-notebooks train-kaggle kaggle-status ora2pg-pull up down logs clean
 
 help:  ## Show the available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -47,6 +47,9 @@ train-kaggle:  ## Push the training notebook to Kaggle, wait, and fetch results
 
 kaggle-status:  ## Check on the running Kaggle notebook
 	$(UV) run python scripts/kaggle_run.py status
+
+eval:  ## Score predictions by execution and write metrics, report and charts
+	$(UV) run orashift eval
 
 check-notebooks:  ## Statically validate the Kaggle notebooks
 	$(UV) run python scripts/check_notebooks.py
