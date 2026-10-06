@@ -1,8 +1,6 @@
 """Push the built dataset to the HuggingFace Hub.
 
-NOT TESTED FROM THE MACHINE THIS WAS WRITTEN ON: that network returns 403 for
-huggingface.co, so neither the upload nor the `datasets` dependency could be
-exercised. Run it from Kaggle or any network with Hub access.
+Published as https://huggingface.co/datasets/devansh173/orashift-pairs.
 
     pip install "datasets>=3.0" "huggingface_hub>=0.26"
     export HF_TOKEN=...            # a write token
@@ -79,12 +77,38 @@ def main() -> int:
 
     card = args.data_dir / "README.md"
     if card.exists():
-        HfApi().upload_file(
-            path_or_fileobj=str(card),
+        # push_to_hub wrote a README whose YAML header declares the six custom
+        # split names; without it the Hub viewer only recognises train/test.
+        # Keep that header and put the dataset card beneath it.
+        api = HfApi(token=token)
+        generated = Path(
+            api.hf_hub_download(args.repo_id, "README.md", repo_type="dataset")
+        ).read_text(encoding="utf-8")
+        header = ""
+        if generated.startswith("---"):
+            header = generated.split("---", 2)[1].strip()
+        extra = "\n".join(
+            [
+                "license: mit",
+                "task_categories:",
+                "- text-generation",
+                "language:",
+                "- en",
+                "tags:",
+                "- sql",
+                "- oracle",
+                "- postgresql",
+                "- code-translation",
+                "- synthetic",
+                "pretty_name: OraShift Oracle to PostgreSQL pairs",
+            ]
+        )
+        body = card.read_text(encoding="utf-8")
+        api.upload_file(
+            path_or_fileobj=f"---\n{extra}\n{header}\n---\n\n{body}".encode(),
             path_in_repo="README.md",
             repo_id=args.repo_id,
             repo_type="dataset",
-            token=token,
         )
         print("uploaded the dataset card")
     return 0

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OraShift</title>
+<meta name="description" content="Oracle SQL to PostgreSQL with a QLoRA fine-tuned LLM, judged by execution.">
+<style>
+:root {
+  --bg: #f7f7f5; --surface: #ffffff; --surface-2: #f0efeb; --text: #1c1c1a; --muted: #62615c;
+  --border: #dddcd6; --accent: #2f5bd3; --accent-text: #ffffff;
+  --ok-bg: #e5f3ea; --ok-text: #1d6b3a; --warn-bg: #fdf1dc; --warn-text: #8a5300;
+  --info-bg: #e8eefc; --info-text: #23439e;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151514; --surface: #1e1e1c; --surface-2: #272724; --text: #ecebe6; --muted: #a3a29b;
+    --border: #3a3a36; --accent: #7d9cf0; --accent-text: #10131c;
+    --ok-bg: #173323; --ok-text: #8fdcaa; --warn-bg: #3a2a10; --warn-text: #f3c477;
+    --info-bg: #1c2645; --info-text: #a9bdf5;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 var(--sans); }
+main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+a { color: var(--accent); }
+h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: -0.02em; }
+h2 { font-size: 1.25rem; margin: 40px 0 12px; }
+h3 { font-size: 1rem; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+.lede { color: var(--muted); font-size: 1.05rem; max-width: 720px; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+.links a { text-decoration: none; border: 1px solid var(--border); background: var(--surface);
+  padding: 6px 12px; border-radius: 999px; font-size: 0.9rem; color: var(--text); }
+.links a:hover { border-color: var(--accent); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 28px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.stat .v { font-size: 1.7rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.stat .l { color: var(--muted); font-size: 0.88rem; }
+.stat.hi { border-color: var(--accent); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: 40px 0 16px; }
+.tabs button { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted);
+  font: inherit; font-weight: 600; padding: 8px 14px; cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+textarea, select, input[type=search] { font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+textarea { width: 100%; min-height: 150px; font-family: var(--mono); font-size: 0.9rem; resize: vertical; }
+.btn { background: var(--accent); color: var(--accent-text); border: 0; border-radius: 8px;
+  padding: 9px 18px; font: inherit; font-weight: 600; cursor: pointer; }
+.btn:disabled { opacity: 0.55; cursor: wait; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+.chip { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); border-radius: 999px;
+  padding: 3px 10px; font-size: 0.82rem; cursor: pointer; font-family: var(--mono); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+pre { margin: 0; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; font: 0.85rem/1.5 var(--mono); white-space: pre-wrap; word-break: break-word; }
+.label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);
+  margin: 14px 0 4px; font-weight: 600; }
+.badge { display: inline-block; border-radius: 6px; padding: 2px 8px; font-size: 0.82rem; font-weight: 600; }
+.b-ok { background: var(--ok-bg); color: var(--ok-text); }
+.b-warn { background: var(--warn-bg); color: var(--warn-text); }
+.b-info { background: var(--info-bg); color: var(--info-text); }
+.note { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
+.status { color: var(--muted); font-size: 0.88rem; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; font-size: 0.82rem; }
+td.num, th.num { text-align: right; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } h1 { font-size: 1.6rem; } }
+.unit { margin-bottom: 14px; }
+.unit .meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.filters input[type=search] { flex: 1 1 220px; }
+.hidden { display: none; }
+ul.lim { padding-left: 20px; margin: 0; }
+ul.lim li { margin-bottom: 6px; }
+code { font-family: var(--mono); font-size: 0.88em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>OraShift</h1>
+    <p class="lede">Oracle SQL to PostgreSQL with a QLoRA fine-tune of Qwen2.5-Coder-3B, and every
+      translation judged by <strong>executing it</strong> on both databases. A translation counts only
+      if it runs on PostgreSQL and returns what the original returns on Oracle.</p>
+    <nav class="links">
+      <a href="https://github.com/devansh173/orashift" target="_blank" rel="noopener">Code &amp; write-up on GitHub</a>
+      <a href="https://huggingface.co/devansh173/orashift-qlora-adapter" target="_blank" rel="noopener">Model adapter</a>
+      <a href="https://huggingface.co/datasets/devansh173/orashift-pairs" target="_blank" rel="noopener">Dataset</a>
+    </nav>
+  </header>
+
+  <section class="stats" id="stats" aria-label="Execution accuracy"></section>
+  <p class="note">Execution accuracy over 330 held-out test units. Hybrid keeps sqlglot's output when it
+    verifies against Oracle and uses the fine-tuned model otherwise.</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="translate">Translate</button>
+    <button role="tab" aria-selected="false" data-tab="explore">Explore the test set</button>
+    <button role="tab" aria-selected="false" data-tab="results">Results</button>
+  </div>
+
+  <section id="tab-translate">
+    <div class="card">
+      <h3>Paste Oracle SQL</h3>
+      <p class="note" style="margin-top:0">The rules run live in your browser. This free demo does not run the
+        3B model; for test-set statements it shows the model's real saved output.</p>
+      <div class="chips" id="examples"></div>
+      <textarea id="input" spellcheck="false" aria-label="Oracle SQL"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="go" disabled>Translate</button>
+        <span class="status" id="status">Loading Python in your browser…</span>
+      </div>
+      <div id="out" class="hidden"></div>
+    </div>
+  </section>
+
+  <section id="tab-explore" class="hidden">
+    <p class="note" style="margin-top:0">All 330 held-out units with the base and fine-tuned models' actual
+      outputs. Pass or fail was decided by execution, so text that differs from the reference can still be
+      correct. Per-construct accuracy is shown for the selected construct.</p>
+    <div class="filters">
+      <select id="f-split" aria-label="Split"></select>
+      <select id="f-cat" aria-label="Construct"></select>
+      <input type="search" id="f-q" placeholder="Search SQL…" aria-label="Search SQL">
+    </div>
+    <div id="cat-acc" class="note"></div>
+    <div id="units"></div>
+    <button class="btn hidden" id="more" style="background:var(--surface-2);color:var(--text)">Show more</button>
+  </section>
+
+  <section id="tab-results" class="hidden">
+    <h3>By generalisation axis</h3>
+    <p class="note" style="margin-top:0">Two things are held out: the <code>logistics</code> schema, and 25 of
+      123 templates. The fine-tune generalises to unseen table names, not to unseen constructs.</p>
+    <div class="card table-wrap"><table id="t-split"></table></div>
+    <h2>By construct</h2>
+    <div class="card table-wrap"><table id="t-cat"></table></div>
+    <h2>Limitations</h2>
+    <ul class="lim">
+      <li>On an unseen construct variant the fine-tune is no better than the base model, and on
+        <code>SYSDATE</code> it is far worse (2/26 against 23/26) because it echoes unfamiliar input unchanged.</li>
+      <li>The data is synthetic and template-generated, so it is more uniform than real-world SQL.</li>
+      <li>This page cannot execute anything. Every accuracy figure comes from the offline evaluation.</li>
+    </ul>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const pct = (c) => c && c.total ? `${Math.round(c.rate * 100)}%` : "n/a";
+const frac = (c) => c && c.total ? `${c.verified}/${c.total} (${pct(c)})` : "n/a";
+const norm = (s) => (s || "").trim().replace(/;\s*$/, "").replace(/\s+/g, " ").toLowerCase();
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k === "class" ? (n.className = v) : n.setAttribute(k, v);
+  for (const k of kids) if (k != null) n.append(k);
+  return n;
+};
+const block = (label, sql) => [el("div", { class: "label" }, label), el("pre", {}, sql || "(empty)")];
+
+let DATA, py, byOracle = new Map();
+
+// Tabs
+document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-selected", x === b));
+  for (const t of ["translate", "explore", "results"]) $("tab-" + t).classList.toggle("hidden", t !== b.dataset.tab);
+}));
+
+function renderStats(m) {
+  const a = m.execution_accuracy;
+  const items = [["Hybrid", a.hybrid, true], ["Fine-tuned", a.finetuned], ["Base model", a.base], ["sqlglot rules", a.sqlglot]];
+  for (const [name, c, hi] of items)
+    $("stats").append(el("div", { class: "stat" + (hi ? " hi" : "") },
+      el("div", { class: "v" }, pct(c)), el("div", { class: "l" }, `${name} · ${c.verified}/${c.total}`)));
+}
+
+function renderTables(m) {
+  const cols = [["base", "Base"], ["finetuned", "Fine-tuned"], ["sqlglot", "sqlglot"], ["hybrid", "Hybrid"]];
+  const head = (first) => el("tr", {}, el("th", {}, first), ...cols.map(([, n]) => el("th", { class: "num" }, n)));
+  $("t-split").append(head("Split"));
+  for (const [k, label] of Object.entries(m.split_labels))
+    $("t-split").append(el("tr", {}, el("td", {}, label), ...cols.map(([c]) => el("td", { class: "num" }, frac(m.by_split[k][c])))));
+  $("t-cat").append(head("Construct"));
+  for (const [k, v] of Object.entries(m.by_category))
+    $("t-cat").append(el("tr", {}, el("td", {}, el("code", {}, k)), ...cols.map(([c]) => el("td", { class: "num" }, frac(v[c])))));
+}
+
+// Explore
+let shown = 20;
+function filtered() {
+  const s = $("f-split").value, c = $("f-cat").value, q = $("f-q").value.toLowerCase();
+  return DATA.units.filter((u) => (!s || u.split === s) && (!c || u.category === c) &&
+    (!q || (u.oracle + " " + u.reference).toLowerCase().includes(q)));
+}
+function renderUnits() {
+  const list = filtered();
+  const box = $("units"); box.replaceChildren();
+  const c = $("f-cat").value;
+  $("cat-acc").textContent = c
+    ? `${c}: fine-tuned ${frac(DATA.metrics.by_category[c].finetuned)}, base ${frac(DATA.metrics.by_category[c].base)} by execution.`
+    : `${list.length} units.`;
+  for (const u of list.slice(0, shown)) {
+    box.append(el("div", { class: "card unit" },
+      el("div", { class: "meta" }, el("span", { class: "badge b-info" }, u.category),
+        el("span", {}, DATA.metrics.split_labels[u.split]), el("span", {}, "schema: " + u.schema)),
+      ...block("Oracle input", u.oracle),
+      el("div", { class: "grid2" },
+        el("div", {}, ...block("Fine-tuned output", u.finetuned)),
+        el("div", {}, ...block("Base model output", u.base))),
+      ...block("Hand-written reference (execution-verified)", u.reference)));
+  }
+  $("more").classList.toggle("hidden", list.length <= shown);
+}
+function setupExplore() {
+  const splits = [["", "All splits"], ...Object.entries(DATA.metrics.split_labels)];
+  for (const [v, l] of splits) $("f-split").append(el("option", { value: v }, l));
+  const cats = [...new Set(DATA.units.map((u) => u.category))].sort();
+  $("f-cat").append(el("option", { value: "" }, "All constructs"));
+  for (const c of cats) $("f-cat").append(el("option", { value: c }, c));
+  for (const id of ["f-split", "f-cat", "f-q"]) $(id).addEventListener("input", () => { shown = 20; renderUnits(); });
+  $("more").addEventListener("click", () => { shown += 20; renderUnits(); });
+  renderUnits();
+}
+
+// Translate
+function setupExamples() {
+  const want = ["rownum", "connect_by", "add_months", "trunc_date", "nvl", "decode", "outer_join_plus", "merge"];
+  for (const cat of want) {
+    const u = DATA.units.find((x) => x.category === cat && x.split === "test_unseen_schema") || DATA.units.find((x) => x.category === cat);
+    if (!u) continue;
+    const b = el("button", { class: "chip", type: "button" }, cat);
+    b.addEventListener("click", () => { $("input").value = u.oracle; });
+    $("examples").append(b);
+  }
+  $("input").value = DATA.units.find((x) => x.category === "rownum").oracle;
+}
+
+function translate() {
+  const sql = $("input").value;
+  const out = $("out"); out.replaceChildren(); out.classList.remove("hidden");
+  if (!sql.trim()) return;
+  const [rules, isms] = JSON.parse(py.globals.get("run")(sql));
+  const saved = byOracle.get(norm(sql));
+  const parts = [];
+  if (!isms.length && rules) {
+    parts.push(el("div", { class: "label" }, "Path"), el("span", { class: "badge b-ok" }, "sqlglot rules"),
+      el("p", { class: "note" }, "No Oracle-specific constructs found, so the rules answer. sqlglot scores 100% on constructs like NVL, DECODE and TO_CHAR."),
+      ...block("PostgreSQL", rules));
+  } else if (saved) {
+    parts.push(el("div", { class: "label" }, "Path"), el("span", { class: "badge b-info" }, "fine-tuned model (saved test-set output)"),
+      el("p", { class: "note" }, `Contains ${isms.join(", ")}, which the rules cannot handle. This exact statement is in the held-out test set (${DATA.metrics.split_labels[saved.split]}), so this is the model's real output from the evaluation run.`),
+      ...block("PostgreSQL (fine-tuned model)", saved.finetuned),
+      el("div", { class: "grid2" },
+        el("div", {}, ...block("Base model, for comparison", saved.base)),
+        el("div", {}, ...block("sqlglot rules, for comparison", rules || "(could not parse)"))));
+  } else {
+    parts.push(el("div", { class: "label" }, "Path"), el("span", { class: "badge b-warn" }, "needs the model, not run here"),
+      el("p", { class: "note" }, `Contains ${isms.join(", ") || "an unsupported construct"}, which sqlglot usually passes through unchanged. This free demo does not run the 3B model; the rules' attempt is shown below and is likely wrong. Pick an example above to see real model output, or run the adapter yourself.`),
+      ...block("PostgreSQL (sqlglot, unreliable here)", rules || "(sqlglot could not parse this)"));
+  }
+  out.append(...parts);
+}
+
+async function boot() {
+  DATA = await (await fetch("data.json")).json();
+  for (const u of DATA.units) byOracle.set(norm(u.oracle), u);
+  renderStats(DATA.metrics); renderTables(DATA.metrics); setupExplore(); setupExamples();
+  try {
+    py = await loadPyodide();
+    $("status").textContent = "Installing sqlglot…";
+    await py.loadPackage("micropip");
+    await py.runPythonAsync('import micropip\nawait micropip.install("sqlglot==30.21.0")');
+    py.FS.writeFile("/home/pyodide/translate.py", await (await fetch("translate.py")).text());
+    py.runPython(`
+import sys, json
+sys.path.insert(0, "/home/pyodide")
+from translate import needs_model, try_sqlglot
+def run(sql):
+    sql = sql.strip().rstrip(";")
+    return json.dumps([try_sqlglot(sql), needs_model(sql)])
+`);
+    $("status").textContent = "Ready.";
+    $("go").disabled = false;
+  } catch (e) {
+    $("status").textContent = "Could not load Python in this browser: " + e.message;
+  }
+}
+$("go").addEventListener("click", translate);
+boot();
+</script>
+</body>
+</html>

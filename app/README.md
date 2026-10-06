@@ -65,14 +65,18 @@ reach it. If that is still too slow for your deployment, in rough order of effor
 
 ## Deploying to HuggingFace Spaces
 
+Gradio Spaces on the free CPU tier now require a paid HuggingFace plan, so the hosted demo
+is a **static** Space instead: [huggingface.co/spaces/devansh173/orashift](https://huggingface.co/spaces/devansh173/orashift).
+It runs the same `translate.py` routing and the `sqlglot` rules in the browser under
+Pyodide, and shows the model's real test-set outputs rather than running it.
+
 ```bash
-pip install huggingface_hub
-huggingface-cli login
-huggingface-cli repo create orashift --type space --space_sdk gradio
-# copy app/, results/metrics.json and a requirements.txt into the Space repo
+uv run python scripts/build_space.py     # writes space/data.json and copies translate.py
+hf upload <user>/orashift space . --repo-type space
 ```
 
-Set `DEMO_ADAPTER` as a Space secret to enable the model path.
-
-**Not tested from this repository's development machine**, whose network blocks
-`huggingface.co`. The app itself runs locally; only the Spaces upload is unverified.
+With a paid plan, this Gradio app can be deployed as-is: copy `app.py`,
+`src/orashift/translate.py` (as `translate.py`),
+`results/metrics.json` and a `requirements.txt` (`sqlglot`, `torch`, `transformers`, `peft`,
+`accelerate`) into a Gradio Space and set `DEMO_ADAPTER`. The model loads in `bfloat16` by
+default (`DEMO_DTYPE` overrides it), about 6 GB, so it fits a 16 GB CPU Space.
