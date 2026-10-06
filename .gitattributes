@@ -1,0 +1,3 @@
+# The seed CSVs are compared byte-for-byte against a fresh generation, so they
+# must keep LF endings on every platform, including Windows with core.autocrlf.
+data/seed/**/*.csv text eol=lf
