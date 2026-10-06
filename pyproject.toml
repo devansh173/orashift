@@ -22,6 +22,11 @@ dependencies = [
 [project.scripts]
 orashift = "orashift.cli:app"
 
+[project.optional-dependencies]
+demo = [
+    "gradio>=5.0",
+]
+
 [dependency-groups]
 dev = [
     "ruff>=0.8.4",
@@ -62,6 +67,9 @@ known-first-party = ["orashift"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# The demo lives in app/ rather than src/, because a HuggingFace Space expects
+# app.py near the root. This puts it on the path for the tests.
+pythonpath = ["."]
 addopts = "-q --strict-markers"
 markers = [
     "db: requires a live Oracle and/or PostgreSQL connection (skipped in CI)",

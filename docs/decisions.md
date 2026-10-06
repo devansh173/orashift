@@ -1143,3 +1143,53 @@ rather than a flip.
 
 Both charts are regenerated from `metrics.json` on every `orashift eval`, so a chart cannot
 drift away from the numbers it claims to show.
+
+---
+
+## D49 — The demo routes by measured accuracy, not by intuition
+
+**Decision.** `app/translate.py` tries `sqlglot` first and falls back to the model only for
+constructs where `sqlglot` was measured to be unreliable. The token list is derived from
+`results/metrics.json`.
+
+**Alternatives.**
+- *Always use the model.* Simplest, and the obvious thing to demo.
+- *Always use the rules.* Instant, free, and wrong on a third of inputs.
+- *Run both and show both.*
+
+**Why.** Rules-first is not a demo shortcut: it is the strategy that scored best in
+evaluation — 87%, against the fine-tuned model's 86% and `sqlglot`'s 61%. It also makes the
+demo usable on a free CPU, because most statements never reach the model and return
+instantly.
+
+**The mistake worth recording.** The first version of the routing list was written from
+memory and sent `NVL` and `DECODE` to the model. Both are wrong: `sqlglot` scores 100% on
+each. Rewriting the list from the measured per-construct table fixed it, and a test now
+asserts that every construct `sqlglot` scores below 85% on has a detection token. Writing
+the list from intuition when a measurement existed was the error, not the particular
+tokens chosen.
+
+**Cost accepted.** The threshold is cautious — constructs in the 60–85% band go to the
+model even though the rules often get them right. The demo cannot execute anything, so it
+cannot tell a good rule output from a bad one, and a slower answer beats a confidently
+wrong one.
+
+---
+
+## D50 — The demo degrades rather than refuses when the model is absent
+
+**Decision.** With no `DEMO_ADAPTER` set, the app still runs. Statements the rules handle
+well are answered normally; statements needing the model are answered by the rules and
+**flagged as unverified**, with the construct named.
+
+**Alternatives.**
+- *Refuse to start without the model.*
+- *Fall back silently.*
+
+**Why.** A demo that will not start because a multi-gigabyte download failed is worse than
+one that is honest about which half is running. But falling back silently would be worse
+than either: the user would get a plausible-looking statement that passes `ROWNUM` straight
+through to PostgreSQL, where it fails. The flag names the construct and says to verify.
+
+This mirrors the rule the whole project runs on: it is better to say a number does not
+exist than to show one that is not real.
