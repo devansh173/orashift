@@ -1,22 +1,18 @@
-"""The command surface: what exists, and how unfinished commands behave."""
+"""The command surface: every stage is registered and documents itself."""
 
 from __future__ import annotations
 
 import pytest
-import typer
 from typer.testing import CliRunner
 
 from orashift import __version__
-from orashift.cli import _not_implemented, app
+from orashift.cli import app
 
 runner = CliRunner()
 
-# Commands still stubbed out. Everything else is covered elsewhere and must not
-# be invoked here: seed, generate and verify would hit real databases, and
-# build-dataset is exercised through tests/test_dataset.py.
-# Every command is implemented now; nothing is stubbed.
-LATER_PHASE_COMMANDS: list[str] = []
-IMPLEMENTED_COMMANDS = [
+# Only --help is invoked for these here: seed, generate and verify would hit real
+# databases, and build-dataset is exercised through tests/test_dataset.py.
+COMMANDS = [
     "eval",
     "check-connections",
     "seed",
@@ -24,26 +20,19 @@ IMPLEMENTED_COMMANDS = [
     "verify",
     "build-dataset",
     "version",
+    "translate",
 ]
 
 
 def test_help_lists_the_whole_pipeline():
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    for command in [*IMPLEMENTED_COMMANDS, *LATER_PHASE_COMMANDS, "translate"]:
+    for command in COMMANDS:
         assert command in result.output
 
 
-def test_not_implemented_helper_still_works():
-    """Kept for phase 9, which may add commands; nothing uses it right now."""
-    import typer as _typer
-
-    with pytest.raises(_typer.Exit):
-        _not_implemented(9, "plsql")
-
-
-@pytest.mark.parametrize("command", IMPLEMENTED_COMMANDS)
-def test_implemented_commands_have_help(command: str):
+@pytest.mark.parametrize("command", COMMANDS)
+def test_every_command_has_help(command: str):
     """--help must work without touching a database."""
     result = runner.invoke(app, [command, "--help"])
     assert result.exit_code == 0
@@ -60,21 +49,6 @@ def test_version_command():
     assert __version__ in result.output
 
 
-@pytest.mark.parametrize("command", LATER_PHASE_COMMANDS)
-def test_later_phase_commands_fail_instead_of_pretending(command: str):
-    result = runner.invoke(app, [command])
-    assert result.exit_code == 1
-
-
-def test_not_implemented_names_the_phase(capsys: pytest.CaptureFixture[str]):
-    with pytest.raises(typer.Exit) as excinfo:
-        _not_implemented(4, "build-dataset")
-    assert excinfo.value.exit_code == 1
-    message = capsys.readouterr().err
-    assert "build-dataset" in message
-    assert "phase 4" in message
-
-
 def test_translate_rejects_no_input():
     result = runner.invoke(app, ["translate"])
     assert result.exit_code == 2
@@ -85,3 +59,23 @@ def test_translate_rejects_both_inputs(tmp_path):
     sql_file.write_text("SELECT 1 FROM dual;")
     result = runner.invoke(app, ["translate", "SELECT 1 FROM dual", "--file", str(sql_file)])
     assert result.exit_code == 2
+
+
+def test_translate_a_statement_with_the_rules():
+    result = runner.invoke(app, ["translate", "SELECT NVL(commission_pct, 0) FROM hr_employees"])
+    assert result.exit_code == 0
+    assert "COALESCE(commission_pct, 0)" in result.stdout
+
+
+def test_translate_a_file_of_statements(tmp_path):
+    sql_file = tmp_path / "units.sql"
+    sql_file.write_text(
+        "-- two independent statements\n"
+        "SELECT NVL(a, 0) FROM t;\n"
+        "SELECT DECODE(s, 'A', 1, 0) FROM t;\n"
+    )
+    result = runner.invoke(app, ["translate", "--file", str(sql_file)])
+    assert result.exit_code == 0
+    assert result.stdout.count(";") == 2
+    assert "COALESCE(a, 0)" in result.stdout
+    assert "CASE WHEN s = 'A' THEN 1 ELSE 0 END" in result.stdout

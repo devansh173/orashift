@@ -21,9 +21,9 @@ import gradio as gr
 # Import works whether this is run as `python app/app.py`, as `python -m app.app`,
 # or from a HuggingFace Space where app.py sits at the repository root.
 try:
-    from app.translate import ADAPTER, translate
+    from app.translate import ADAPTER, preload, translate
 except ImportError:  # pragma: no cover - depends on how it was launched
-    from translate import ADAPTER, translate
+    from translate import ADAPTER, preload, translate
 
 METRICS = Path("results/metrics.json")
 
@@ -81,7 +81,8 @@ def on_translate(oracle_sql: str, schema_context: str) -> tuple[str, str]:
 
 def build() -> gr.Blocks:
     model_state = (
-        f"Model fallback enabled (`{ADAPTER}`)."
+        f"Model fallback enabled (`{ADAPTER}`). On a free CPU, statements that need the "
+        "model take 30 seconds or more; the rest return instantly."
         if ADAPTER
         else "Model fallback **not** enabled: set `DEMO_ADAPTER` to switch it on. "
         "Statements needing it are answered by the rules and flagged as unverified."
@@ -149,6 +150,7 @@ def build() -> gr.Blocks:
 
 
 if __name__ == "__main__":
+    preload()
     build().launch(
         server_name=os.environ.get("GRADIO_SERVER_NAME", "127.0.0.1"),
         server_port=int(os.environ.get("GRADIO_SERVER_PORT", "7860")),

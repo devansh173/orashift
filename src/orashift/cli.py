@@ -1,8 +1,8 @@
 """The ``orashift`` command line interface.
 
-The full command surface is registered from the start so the shape of the
-pipeline is visible from ``orashift --help``. Commands belonging to later
-phases exit with a clear message rather than pretending to work.
+Each command is one stage of the pipeline, in the order they run:
+connections, seed, generate, verify, build-dataset, eval, plus translate for
+converting statements directly.
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from enum import StrEnum
 from pathlib import Path
-from typing import Annotated, NoReturn
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -43,12 +43,6 @@ app = typer.Typer(
 console = Console()
 err_console = Console(stderr=True)
 log = get_logger(__name__)
-
-
-def _not_implemented(phase: int, what: str) -> NoReturn:
-    """Fail loudly for commands whose phase has not landed yet."""
-    err_console.print(f"[yellow]{what} is not implemented yet (arrives in phase {phase}).[/]")
-    raise typer.Exit(code=1)
 
 
 @app.callback()
@@ -511,11 +505,29 @@ def translate(
         typer.Option("--file", "-f", help="A .sql file of independent Oracle statements."),
     ] = None,
 ) -> None:
-    """Translate Oracle SQL to PostgreSQL."""
+    """Translate Oracle SQL to PostgreSQL: rules first, fine-tuned model as fallback.
+
+    The PostgreSQL goes to stdout and the path taken to stderr, so the output can
+    be piped. Set DEMO_ADAPTER to a local adapter or Hub id to enable the model.
+    """
     if (sql is None) == (file is None):
         err_console.print("[red]Provide exactly one of: a SQL argument, or --file.[/]")
         raise typer.Exit(code=2)
-    _not_implemented(3, "translate")
+
+    from orashift.seed.load import split_statements
+    from orashift.translate import translate as translate_statement
+
+    statements = [sql] if sql is not None else split_statements(file.read_text(encoding="utf-8"))
+    failed = 0
+    for statement in statements:
+        result = translate_statement(statement)
+        err_console.print(f"-- {result.path}: {result.note}", markup=False, highlight=False)
+        if result.path == "failed":
+            failed += 1
+            continue
+        typer.echo(f"{result.postgres_sql};")
+    if failed:
+        raise typer.Exit(code=1)
 
 
 @app.command("eval")
