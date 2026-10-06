@@ -205,6 +205,27 @@ def upload_adapter(username: str) -> str:
     return slug
 
 
+def require_datasets_ready(username: str, slugs: list[str]) -> None:
+    """Fail before pushing if a required dataset is missing or still processing.
+
+    Kaggle accepts a kernel that references a dataset which is not ready yet,
+    mounts nothing, and the run fails a minute later. Checking here turns that
+    into an immediate, readable error instead of a wasted queue cycle.
+    """
+    for slug in slugs:
+        ref = f"{username}/{slug}"
+        listing = run_kaggle(["datasets", "files", ref], check=False)
+        output = listing.stdout + listing.stderr
+        if listing.returncode != 0 or "name" not in output:
+            raise SystemExit(
+                f"dataset {ref} is not available yet.\n"
+                f"Upload it with: python scripts/kaggle_run.py upload-adapter\n"
+                f"If it was just uploaded, give Kaggle a minute to process it.\n"
+                f"{output.strip()[:300]}"
+            )
+        print(f"dataset ready: {ref}")
+
+
 def current_status(ref: str) -> str:
     output = run_kaggle(["kernels", "status", ref], check=False).stdout.strip()
     for status in (*TERMINAL_STATUSES, "running", "queued"):
@@ -281,6 +302,7 @@ def main() -> int:
         fetch(ref, RESULTS / args.kernel)
         return 0
 
+    require_datasets_ready(username, kernel.get("datasets", []))
     staging = stage(kernel, username, private=not args.public)
     try:
         seconds = args.kernel_timeout_minutes * 60
