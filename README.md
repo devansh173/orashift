@@ -462,8 +462,3 @@ make test-db   # tests that need live databases (skipped in CI)
 Every non-obvious choice, with the alternatives that were considered and why they were
 rejected, is recorded in [docs/decisions.md](docs/decisions.md).
 
-## Licence
-
-The code is MIT-licensed. The fine-tuned adapter is a derivative of Qwen2.5-Coder-3B-Instruct
-and is subject to the
-[Qwen Research License](https://huggingface.co/Qwen/Qwen2.5-Coder-3B-Instruct/blob/main/LICENSE).
